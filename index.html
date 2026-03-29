@@ -4057,15 +4057,15 @@ const App = (() => {
           : '';
 
       const waMsg = encodeURIComponent(
-          `🍣 НОВЫЙ ЗАКАЗ #${orderId}\n\n` +
-          `📦 Заказ:\n${itemsList}\n\n` +
-          `💰 Итого: ${order.total} GEL\n` +
-          `💳 Оплата: ${order.payment}\n\n` +
-          `👤 ${order.contact.name}\n` +
-          `📞 ${order.contact.phone}\n` +
-          `🏠 ${order.address || 'не указан'}\n` +
-          (coordsText ? `${coordsText}\n` : '') +
-          (order.note ? `📝 ${order.note}\n` : '')
+        `🍣 NEW ORDER #${orderId}\n\n`
+        + `📦 Order:\n${itemsList}\n\n`
+        + `💰 Total: ${order.total} GEL\n`
+        + `💳 Payment: ${order.payment}\n\n`
+        + `👤 ${order.contact.name}\n`
+        + `📞 ${order.contact.phone}\n`
+        + `🏠 ${order.address || 'not specified'}\n`
+        + (coordsText ? `${coordsText}\n` : '')
+        + (order.note ? `📝 ${order.note}\n` : '')
       );
 
       document.getElementById('waOrderLink').href =

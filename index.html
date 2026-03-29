@@ -1,0 +1,4385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="SUSHI CLAN — Premium sushi delivery in Batumi. Handcrafted sets with collectible packaging. Private Kitchen experience.">
+<meta name="theme-color" content="#08080D">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<title>SUSHI CLAN — Private Kitchen · Batumi</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════ */
+:root {
+  --color-bg:           #08080D;
+  --color-surface:      #111118;
+  --color-surface-2:    #19191F;
+  --color-text:         #F0EDE8;
+  --color-text-muted:   #7A7670;
+  --color-accent:       #C9A84C;
+  --color-accent-hover: #DFC06A;
+  --color-accent-dim:   rgba(201,168,76,0.12);
+  --color-border:       #252530;
+  --color-overlay:      rgba(8,8,13,0.85);
+  --color-danger:       #E85454;
+  --color-success:      #4CAF50;
+  --color-info:         #5BA4E6;
+
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'Bebas Neue', sans-serif;
+
+  --text-xs:   clamp(0.7rem,  0.65rem + 0.2vw, 0.8rem);
+  --text-sm:   clamp(0.8rem,  0.75rem + 0.2vw, 0.875rem);
+  --text-base: clamp(0.875rem, 0.85rem + 0.2vw, 1rem);
+  --text-lg:   clamp(1rem,    0.95rem + 0.3vw, 1.2rem);
+  --text-xl:   clamp(1.2rem,  1.1rem  + 0.5vw, 1.6rem);
+  --text-2xl:  clamp(1.5rem,  1.2rem  + 1vw,   2.2rem);
+  --text-3xl:  clamp(2rem,    1.5rem  + 1.5vw, 3rem);
+  --text-hero: clamp(2.5rem,  2rem    + 2.5vw, 4.5rem);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --space-xs: clamp(0.25rem, 0.5vw, 0.5rem);
+  --space-sm: clamp(0.5rem, 1vw, 0.75rem);
+  --space-md: clamp(1rem, 2vw, 1.5rem);
+  --space-lg: clamp(1.5rem, 3vw, 2.5rem);
+  --space-xl: clamp(2rem, 5vw, 4rem);
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Bebas Neue', sans-serif !important; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+  background: var(--color-bg);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+body.scroll-locked {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  touch-action: none;
+}
+
+a { color: var(--color-accent); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--color-accent-hover); }
+
+img { display: block; max-width: 100%; height: auto; }
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+}
+
+/* Utility */
+.tracking-wide { letter-spacing: 0.15em; text-transform: uppercase; }
+.gold { color: var(--color-accent); }
+.muted { color: var(--color-text-muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-8px) scale(0.96); }
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+[data-reveal].visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+[data-reveal]:nth-child(2) { transition-delay: 0.08s; }
+[data-reveal]:nth-child(3) { transition-delay: 0.16s; }
+[data-reveal]:nth-child(4) { transition-delay: 0.24s; }
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: calc(1rem + env(safe-area-inset-top, 0px)) 0 1rem;
+  transition: background 0.3s, backdrop-filter 0.3s, padding 0.3s;
+}
+.nav.scrolled {
+  background: rgba(8,8,13,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.nav-logo-icon {
+  width: 38px;
+  height: 38px;
+  object-fit: cover;
+  object-position: 50% 36%;
+  border-radius: 50%;
+}
+.nav-logo-text {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--color-accent);
+  letter-spacing: 0.15em;
+}
+.nav-links {
+  display: none;
+  list-style: none;
+  gap: 2rem;
+}
+.nav-links a {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--color-accent); }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.nav-btn-order {
+  display: none;
+  padding: 0.5rem 1.4rem;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+  transition: background 0.2s, transform 0.15s;
+}
+.nav-btn-order:hover {
+  background: var(--color-accent-hover);
+  transform: scale(1.03);
+}
+
+/* Cart icon */
+.nav-cart {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.nav-cart:hover { opacity: 0.8; }
+.nav-cart svg { width: 20px; height: 20px; stroke: var(--color-accent); fill: none; }
+.nav-cart-badge {
+  position: absolute;
+  top: -2px; right: -4px;
+  min-width: 16px;
+  height: 16px;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: 0.6rem;
+  font-weight: 700;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0 3px;
+}
+.nav-cart-badge.visible { display: flex; }
+
+/* Hamburger */
+.hamburger {
+  width: 28px;
+  height: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background: var(--color-accent);
+  transition: transform 0.3s, opacity 0.3s;
+  border-radius: 1px;
+}
+.hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+/* Mobile menu */
+.mobile-menu {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--color-bg);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.mobile-menu.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.mobile-menu a {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  color: var(--color-text);
+  display: block;
+  padding: 0.8rem 0;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--color-accent); }
+.mobile-menu-cta {
+  margin-top: 2rem;
+  padding: 0.8rem 3rem;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+}
+
+/* Profile indicator */
+.nav-profile {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--color-accent);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.nav-profile:hover { background: var(--color-accent-dim); }
+.nav-profile svg { width: 16px; height: 16px; stroke: var(--color-accent); }
+
+@media (min-width: 768px) {
+  .nav-links { display: flex; }
+  .nav-btn-order { display: inline-flex; }
+  .hamburger { display: none; }
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 6rem 1.5rem 3rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 50% 40%, rgba(201,168,76,0.06), transparent),
+    radial-gradient(ellipse 300px 300px at 80% 70%, rgba(201,168,76,0.03), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-logo {
+  width: clamp(140px, 28vw, 220px);
+  height: clamp(140px, 28vw, 220px);
+  margin-bottom: 1.5rem;
+  animation: fadeIn 1s ease 0.1s both;
+  filter: drop-shadow(0 0 48px rgba(201,168,76,0.35));
+  object-fit: cover;
+  object-position: 50% 36%;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+}
+.hero-eyebrow {
+  font-size: var(--text-sm);
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+  animation: fadeUp 0.6s ease 0.3s both;
+  position: relative;
+  z-index: 2;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  max-width: 700px;
+  margin-bottom: 1.2rem;
+  animation: fadeUp 0.7s ease 0.45s both;
+  position: relative;
+  z-index: 2;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--color-accent);
+  font-weight: 400;
+}
+.hero-sub {
+  font-size: var(--text-lg);
+  color: var(--color-text-muted);
+  max-width: 520px;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.6s ease 0.6s both;
+  position: relative;
+  z-index: 2;
+}
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  animation: fadeUp 0.6s ease 0.75s both;
+  position: relative;
+  z-index: 20;
+}
+.hero-scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: pulse 2s ease infinite, fadeIn 1s ease 1.5s both;
+  z-index: 2;
+  pointer-events: none;
+}
+.hero-scroll svg {
+  width: 20px;
+  height: 32px;
+  stroke: var(--color-text-muted);
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2.5rem;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.2);
+}
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  color: var(--color-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(201,168,76,0.3);
+}
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 2rem;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* ═══════════════════════════════════════════
+   TRUST BAR
+   ═══════════════════════════════════════════ */
+.trust-bar {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  content-visibility: auto;
+}
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  text-align: center;
+}
+.trust-item-number {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 500;
+  color: var(--color-accent);
+  line-height: 1.1;
+}
+.trust-item-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 0.3rem;
+}
+
+@media (max-width: 600px) {
+  .trust-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION COMMON
+   ═══════════════════════════════════════════ */
+section {
+  padding: clamp(3.5rem, 8vw, 6rem) 0;
+}
+.section-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 0.8rem;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.section-subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  max-width: 520px;
+  line-height: 1.45;
+  letter-spacing: 0.05em;
+}
+.section-header {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+/* ═══════════════════════════════════════════
+   MENU SECTION — Tier Tabs
+   ═══════════════════════════════════════════ */
+.menu-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 0 0;
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: 1.5rem;
+}
+.menu-tabs::-webkit-scrollbar { display: none; }
+.menu-tab {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  padding: 0.7rem 1.2rem 0.9rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+  background: none;
+  border-top: none; border-left: none; border-right: none;
+}
+.menu-tab:hover { color: var(--color-text); }
+.menu-tab.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ═══════════════════════════════════════════
+   MENU SECTION — Item List
+   ═══════════════════════════════════════════ */
+.menu-tier-group { margin-bottom: 1.5rem; }
+.menu-tier-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  padding-bottom: 0.75rem;
+  opacity: 0.6;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.menu-item:active { background: var(--color-surface); }
+.menu-item-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  position: relative;
+}
+.menu-item-badge {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+.menu-item-body { flex: 1; min-width: 0; }
+.menu-item-tier {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 0.2rem;
+}
+.menu-item-name {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  margin-bottom: 0.15rem;
+}
+.menu-item-sub {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.menu-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+.menu-item-price {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--color-text);
+  line-height: 1;
+}
+.menu-item-price .cur {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+.menu-item-pcs {
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+}
+.menu-item-arrow {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+/* Flagship card */
+.menu-item.flagship {
+  background: var(--color-surface);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  margin-top: 0.5rem;
+}
+.flagship-tag {
+  font-size: 0.55rem;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-radius: var(--radius-full);
+  padding: 0.2rem 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 0.3rem;
+}
+
+/* ═══════════════════════════════════════════
+   MENU — Item Detail Overlay
+   ═══════════════════════════════════════════ */
+.item-detail-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  z-index: 3100;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+  pointer-events: none;
+}
+.item-detail-overlay.open {
+  transform: translateX(0);
+  pointer-events: all;
+}
+.item-detail-banner {
+  width: 100%;
+  height: 240px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  position: relative;
+}
+.item-detail-banner-icon { font-size: 3.5rem; line-height: 1; }
+.item-detail-banner-hint {
+  font-size: var(--text-xs);
+  letter-spacing: 0.15em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+.item-detail-back {
+  position: absolute;
+  top: 1rem; left: 1rem;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(10,10,10,0.8);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--color-text);
+  z-index: 10;
+}
+.item-detail-tier-badge {
+  position: absolute;
+  bottom: 1rem; left: 1rem;
+  background: rgba(10,10,10,0.8);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: var(--radius-full);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.item-detail-pcs-badge {
+  position: absolute;
+  bottom: 1rem; right: 1rem;
+  background: rgba(10,10,10,0.7);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-full);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.06em;
+}
+.item-detail-content { padding: 1.5rem; }
+.item-detail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.item-detail-tag::before {
+  content: '';
+  display: block;
+  width: 14px; height: 1px;
+  background: var(--color-accent);
+}
+.item-detail-name {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.05;
+  margin-bottom: 0.4rem;
+}
+.item-detail-sub {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: 1.2rem;
+}
+.item-detail-desc {
+  font-size: var(--text-sm);
+  line-height: 1.8;
+  color: var(--color-text-muted);
+  margin-bottom: 0.5rem;
+}
+.item-detail-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 1.2rem 0;
+}
+.item-detail-ingredients {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.item-detail-ingredients-title {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+}
+.item-detail-ingredients-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.ingredient-chip {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 0.3rem 0.7rem;
+}
+.item-detail-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.item-detail-price-label {
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+.item-detail-price-val {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+.item-detail-price-cur {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+.item-detail-order-btn {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 0.85rem 1.8rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.item-detail-order-btn:active { opacity: 0.75; transform: scale(0.97); }
+.item-detail-inset-note {
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  margin-top: 0.3rem;
+}
+
+@media (min-width: 768px) {
+  .menu-item-thumb { width: 72px; height: 72px; }
+  .menu-item-name { font-size: var(--text-xl); }
+}
+
+/* ═══════════════════════════════════════════
+   PHILOSOPHY
+   ═══════════════════════════════════════════ */
+.philosophy {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  content-visibility: auto;
+}
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+@media (min-width: 768px) {
+  .philosophy-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.philosophy-item {
+  padding: 1.5rem 0;
+}
+.philosophy-icon {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+.philosophy-item h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+}
+.philosophy-item p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════
+   HOW IT WORKS
+   ═══════════════════════════════════════════ */
+.steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  counter-reset: step;
+}
+@media (min-width: 768px) {
+  .steps-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.step-card {
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  counter-increment: step;
+  position: relative;
+}
+.step-card::before {
+  content: counter(step, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 300;
+  color: var(--color-accent);
+  opacity: 0.5;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+.step-card h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.step-card p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════
+   BLOG
+   ═══════════════════════════════════════════ */
+.blog-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+@media (min-width: 768px) {
+  .blog-grid { grid-template-columns: repeat(3, 1fr); }
+}
+.blog-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+.blog-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+}
+.blog-card-img {
+  height: 180px;
+  background: linear-gradient(135deg, var(--color-surface-2), #1a1a24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+.blog-card-body {
+  padding: 1.25rem;
+}
+.blog-card-tag {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 0.5rem;
+}
+.blog-card-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+  color: var(--color-text);
+}
+.blog-card-excerpt {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+.blog-card-date {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 0.8rem;
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════
+   REVIEWS
+   ═══════════════════════════════════════════ */
+.reviews-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+@media (min-width: 768px) {
+  .reviews-list { grid-template-columns: repeat(2, 1fr); }
+}
+.review-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+.review-stars {
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+  letter-spacing: 0.15em;
+  margin-bottom: 0.8rem;
+}
+.review-text {
+  font-size: var(--text-base);
+  font-style: normal;
+  line-height: 1.7;
+  color: var(--color-text);
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-accent-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+.review-author-info strong {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.review-author-info span {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* Review form */
+.review-form-wrap {
+  margin-top: 2rem;
+  text-align: center;
+}
+.review-form-container {
+  max-width: 500px;
+  margin: 1.5rem auto 0;
+  padding: 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  text-align: left;
+  display: none;
+}
+.review-form-container.active { display: block; }
+.star-picker {
+  display: flex;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+.star-picker button {
+  font-size: 1.5rem;
+  color: var(--color-border);
+  transition: color 0.15s;
+  padding: 0.2rem;
+}
+.star-picker button.active,
+.star-picker button:hover { color: var(--color-accent); }
+
+/* ═══════════════════════════════════════════
+   CTA SECTION
+   ═══════════════════════════════════════════ */
+.cta-section {
+  text-align: center;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  content-visibility: auto;
+}
+.cta-section .section-title {
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cta-section .section-subtitle {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+}
+.cta-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+@media (min-width: 480px) {
+  .cta-buttons { flex-direction: row; justify-content: center; }
+}
+.btn-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  background: #25D366;
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  border-radius: var(--radius-full);
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-whatsapp:hover {
+  background: #20BD5A;
+  color: #fff;
+  transform: translateY(-1px);
+}
+.btn-instagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  background: linear-gradient(135deg, #833AB4, #FD1D1D, #F77737);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  border-radius: var(--radius-full);
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-instagram:hover {
+  opacity: 0.9;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════
+   FAQ
+   ═══════════════════════════════════════════ */
+.faq-list {
+  max-width: 700px;
+}
+.faq-item {
+  border-bottom: 1px solid var(--color-border);
+  padding: 1.2rem 0;
+}
+.faq-question {
+  cursor: pointer;
+  font-weight: 500;
+  font-size: var(--text-base);
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-text);
+  gap: 1rem;
+}
+.faq-question::-webkit-details-marker { display: none; }
+.faq-question::after {
+  content: '+';
+  font-size: 1.3rem;
+  color: var(--color-accent);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  font-weight: 300;
+}
+.faq-item[open] .faq-question::after {
+  transform: rotate(45deg);
+}
+.faq-answer {
+  padding-top: 0.75rem;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════ */
+.footer {
+  padding: 3rem 0 2rem;
+  border-top: 1px solid var(--color-border);
+  content-visibility: auto;
+}
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .footer-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+@media (min-width: 768px) {
+  .footer-brand { align-items: flex-start; }
+}
+.footer-brand-name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--color-accent);
+  letter-spacing: 0.12em;
+}
+.footer-brand-sub {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.footer-links a {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.footer-links a:hover { color: var(--color-accent); }
+.footer-copy {
+  width: 100%;
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  opacity: 0.5;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+/* ═══════════════════════════════════════════
+   FLOATING WHATSAPP
+   ═══════════════════════════════════════════ */
+.fab-whatsapp {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 56px;
+  height: 56px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(37,211,102,0.4);
+  z-index: 900;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.fab-whatsapp:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(37,211,102,0.5);
+}
+.fab-whatsapp svg { width: 28px; height: 28px; fill: #fff; }
+
+/* Decorative */
+.divider {
+  width: 40px;
+  height: 1px;
+  background: var(--color-accent);
+  margin: 1rem 0;
+  opacity: 0.4;
+}
+.gold-line {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  margin: 2rem auto;
+}
+
+/* Delivery badge */
+.delivery-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1rem;
+  background: var(--color-accent-dim);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+  position: relative;
+  z-index: 20;
+}
+
+/* ═══════════════════════════════════════════
+   TOAST NOTIFICATIONS
+   ═══════════════════════════════════════════ */
+.toast-container {
+  position: fixed;
+  top: 5rem;
+  right: 1rem;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+  max-width: 360px;
+}
+@media (max-width: 600px) {
+  .toast-container {
+    right: 0.5rem;
+    left: 0.5rem;
+    max-width: none;
+    top: 4.5rem;
+  }
+}
+.toast {
+  padding: 0.75rem 1.2rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  pointer-events: all;
+  animation: toastIn 0.3s var(--ease-out) both;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.toast.removing { animation: toastOut 0.25s ease forwards; }
+.toast-icon { font-size: 1rem; flex-shrink: 0; }
+.toast.toast-success { border-left: 3px solid var(--color-success); }
+.toast.toast-error { border-left: 3px solid var(--color-danger); }
+.toast.toast-info { border-left: 3px solid var(--color-info); }
+
+/* ═══════════════════════════════════════════
+   CART DRAWER
+   ═══════════════════════════════════════════ */
+.cart-drawer-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--color-overlay);
+  z-index: 1500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.cart-drawer-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.cart-drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(400px, 100vw);
+  background: var(--color-bg);
+  border-left: 1px solid var(--color-border);
+  z-index: 1501;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.35s var(--ease-out);
+  overscroll-behavior: contain;
+  pointer-events: none;
+}
+.cart-drawer.active { transform: translateX(0); pointer-events: all; }
+
+.cart-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.cart-drawer-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+}
+.cart-drawer-close {
+  font-size: 1.3rem;
+  color: var(--color-text-muted);
+  padding: 0.3rem;
+}
+.cart-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  overscroll-behavior: contain;
+}
+.cart-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--color-text-muted);
+}
+.cart-empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.cart-empty p { font-size: var(--text-sm); margin-bottom: 1rem; }
+
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+  align-items: flex-start;
+}
+.cart-item-emoji {
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cart-item-info { flex: 1; }
+.cart-item-name {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+.cart-item-price {
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+}
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.cart-qty-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+.cart-qty-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.cart-qty-value {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+.cart-item-remove {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-left: auto;
+  transition: color 0.2s;
+}
+.cart-item-remove:hover { color: var(--color-danger); }
+
+.cart-drawer-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.cart-total-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.cart-total-value {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+.cart-checkout-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+}
+.cart-checkout-btn:hover { background: var(--color-accent-hover); }
+.cart-checkout-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════
+   AUTH MODAL
+   ═══════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--color-overlay);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.modal {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  animation: slideDown 0.4s var(--ease-out);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-close {
+  float: right;
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.3rem;
+}
+.modal-close:hover { color: var(--color-text); }
+.modal h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  margin-bottom: 0.4rem;
+  clear: both;
+}
+.modal p {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* Auth tabs */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 1.5rem;
+  gap: 0;
+}
+.auth-tab {
+  flex: 1;
+  padding: 0.6rem;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-align: center;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.auth-tab.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.auth-view { display: none; }
+.auth-view.active { display: block; }
+
+.auth-demo-note {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  opacity: 0.7;
+  text-align: center;
+  margin-top: 0.8rem;
+  font-style: normal;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 0.4rem;
+}
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: var(--text-base);
+  font-family: var(--font-body);
+  transition: border-color 0.2s;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+.form-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+.form-input.error { border-color: var(--color-danger); }
+
+.btn-google {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+.btn-google:hover { border-color: var(--color-text-muted); }
+.form-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+.form-divider::before, .form-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+.btn-submit {
+  width: 100%;
+  padding: 0.8rem;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+}
+.btn-submit:hover { background: var(--color-accent-hover); }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* OTP view */
+.otp-inputs {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.otp-input {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  transition: border-color 0.2s;
+}
+.otp-input:focus { outline: none; border-color: var(--color-accent); }
+.otp-countdown {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.otp-resend {
+  color: var(--color-accent);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════
+   CHECKOUT MODAL
+   ═══════════════════════════════════════════ */
+.checkout-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--color-bg);
+  z-index: 2500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.checkout-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.checkout-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.checkout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.checkout-back {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.2s;
+}
+.checkout-back:hover { color: var(--color-accent); }
+.checkout-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+}
+.checkout-close {
+  font-size: 1.3rem;
+  color: var(--color-text-muted);
+  padding: 0.3rem;
+}
+.checkout-close:hover { color: var(--color-text); }
+
+/* Steps indicator */
+.checkout-steps {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+.checkout-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-border);
+  transition: background 0.3s;
+}
+.checkout-step-dot.active { background: var(--color-accent); }
+.checkout-step-dot.done { background: var(--color-success); }
+.checkout-step-line {
+  width: 30px;
+  height: 1px;
+  background: var(--color-border);
+}
+
+/* Step content */
+.checkout-step { display: none; flex: 1; }
+.checkout-step.active { display: block; }
+
+.checkout-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.checkout-item-emoji {
+  font-size: 1.5rem;
+  width: 40px;
+  text-align: center;
+}
+.checkout-item-info { flex: 1; }
+.checkout-item-name {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+.checkout-item-qty {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+.checkout-item-price {
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.checkout-summary {
+  padding: 1.5rem 0;
+}
+.checkout-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.checkout-summary-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+.checkout-summary-total span:last-child { color: var(--color-accent); }
+
+/* Map */
+.checkout-map-container {
+  width: 100%;
+  height: 55vw;
+  min-height: 220px;
+  max-height: 380px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  margin: 0.75rem 0;
+  background: var(--color-surface-2);
+  position: relative;
+}
+.checkout-map-container .leaflet-container { height: 100%; width: 100%; }
+.map-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 1.5rem;
+  gap: 0.75rem;
+}
+.map-fallback-icon { font-size: 2rem; }
+.map-pin-status {
+  font-size: var(--text-sm);
+  color: var(--color-success);
+  margin-top: 0.5rem;
+  display: none;
+  align-items: center;
+  gap: 0.3rem;
+}
+.map-pin-status.visible { display: flex; }
+.map-coords {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-family: 'Bebas Neue', sans-serif !important;
+  margin-left: 0.5rem;
+}
+.map-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  align-items: center;
+}
+.checkout-geoloc-btn,
+.map-google-link {
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  transition: border-color 0.2s, background 0.2s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.checkout-geoloc-btn:hover,
+.map-google-link:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-dim);
+}
+.map-google-link { display: none; }
+.map-google-link.visible { display: inline-flex; }
+
+.map-search-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.map-search-input {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  transition: border-color 0.2s;
+}
+.map-search-input:focus { border-color: var(--color-accent); outline: none; }
+.map-search-input::placeholder { color: var(--color-text-muted); }
+.map-search-btn {
+  padding: 0.55rem 0.85rem;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.map-search-btn:hover { background: var(--color-accent-hover); }
+.map-search-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.map-search-result {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  padding: 0.3rem 0;
+  display: none;
+}
+.map-search-result.visible { display: block; }
+
+/* Custom gold map pin */
+.sc-map-pin { background: none !important; border: none !important; }
+.sc-map-pin svg { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35)); }
+.checkout-map-container .leaflet-control-attribution {
+  background: rgba(255,255,255,0.75) !important;
+  font-size: 9px !important;
+  border-radius: 4px 0 0 0;
+}
+.checkout-map-container .leaflet-control-zoom a {
+  background: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+/* Payment methods */
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.payment-option:hover { border-color: var(--color-text-muted); }
+.payment-option.selected { border-color: var(--color-accent); }
+.payment-option input[type="radio"] { display: none; }
+.payment-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+.payment-option.selected .payment-radio {
+  border-color: var(--color-accent);
+}
+.payment-option.selected .payment-radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+.payment-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+/* Confirmation */
+.checkout-success {
+  text-align: center;
+  padding: 2rem 0;
+}
+.checkout-success-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.checkout-success h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+.checkout-order-number {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  letter-spacing: 0.1em;
+  background: var(--color-accent-dim);
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  margin: 0.5rem 0 1rem;
+}
+.checkout-success p {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  margin-bottom: 1.5rem;
+}
+
+.checkout-next-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  margin-top: 1.5rem;
+  transition: background 0.2s;
+}
+.checkout-next-btn:hover { background: var(--color-accent-hover); }
+.checkout-next-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ═══════════════════════════════════════════
+   PROFILE PANEL
+   ═══════════════════════════════════════════ */
+.profile-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--color-overlay);
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.profile-overlay.active { opacity: 1; pointer-events: all; }
+.profile-panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: min(420px, 100vw);
+  background: var(--color-bg);
+  border-left: 1px solid var(--color-border);
+  z-index: 2001;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.35s var(--ease-out);
+  overscroll-behavior: contain;
+  pointer-events: none;
+}
+.profile-panel.active { transform: translateX(0); pointer-events: all; }
+
+.profile-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+.profile-user-info h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+.profile-user-info p {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+.profile-close {
+  font-size: 1.3rem;
+  color: var(--color-text-muted);
+  padding: 0.3rem;
+}
+
+.profile-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  overscroll-behavior: contain;
+}
+.profile-section-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+}
+
+.profile-order {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+.profile-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.profile-order-id {
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+  letter-spacing: 0.05em;
+}
+.profile-order-status {
+  font-size: var(--text-xs);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.profile-order-status.delivered { background: rgba(76,175,80,0.15); color: var(--color-success); }
+.profile-order-status.processing { background: var(--color-accent-dim); color: var(--color-accent); }
+.profile-order-items {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-bottom: 0.3rem;
+}
+.profile-order-total {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+.profile-order-date {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  opacity: 0.6;
+  margin-top: 0.3rem;
+}
+
+.profile-no-orders {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.profile-footer {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.profile-logout {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: border-color 0.2s, color 0.2s;
+}
+.profile-logout:hover { border-color: var(--color-danger); color: var(--color-danger); }
+
+/* ═══════════════════════════════════════════
+   BLOG ARTICLE MODAL
+   ═══════════════════════════════════════════ */
+.article-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--color-bg);
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.article-overlay.active { opacity: 1; pointer-events: all; }
+.article-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+.article-back {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 2rem;
+  transition: color 0.2s;
+}
+.article-back:hover { color: var(--color-accent); }
+.article-hero-emoji {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+}
+.article-tag {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 0.75rem;
+}
+.article-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.article-meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+.article-content p {
+  font-size: var(--text-base);
+  line-height: 1.8;
+  color: var(--color-text);
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+}
+.article-content p:first-child::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.5rem;
+  margin-top: 0.15rem;
+  color: var(--color-accent);
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ TOAST CONTAINER ═══════════════════════ -->
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+<!-- ═══════════════════════ NAVIGATION ═══════════════════════ -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <img class="nav-logo-icon" src="logo.png" alt="Sushi Clan logo">
+      <span class="nav-logo-text">SUSHI CLAN</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#philosophy">About</a></li>
+      <li><a href="#blog">Journal</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="#menu" class="nav-btn-order">Order Now</a>
+      <button class="nav-cart" id="navCart" aria-label="Open cart">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="nav-cart-badge" id="cartBadge">0</span>
+      </button>
+      <button class="nav-profile" id="navProfile" aria-label="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 20c0-4 4-7 8-7s8 3 8 7"/>
+        </svg>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#menu" onclick="App.toggleMobileMenu()">Menu</a>
+  <a href="#philosophy" onclick="App.toggleMobileMenu()">About</a>
+  <a href="#blog" onclick="App.toggleMobileMenu()">Journal</a>
+  <a href="#reviews" onclick="App.toggleMobileMenu()">Reviews</a>
+  <a href="#faq" onclick="App.toggleMobileMenu()">FAQ</a>
+  <button class="mobile-menu-cta" onclick="App.toggleMobileMenu(); App.openCart();">View Cart</button>
+</div>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero">
+  <img class="hero-logo" src="logo.png" alt="Sushi Clan logo">
+
+  <p class="hero-eyebrow">Private Kitchen · Batumi</p>
+  <h1>The Art of <em>Sushi</em>,<br>Delivered</h1>
+  <p class="hero-sub">Handcrafted premium sets with collectible packaging. Limited to 5 per day.</p>
+
+  <div class="hero-actions">
+    <a href="#menu" class="btn-primary">Explore the Menu &rarr;</a>
+    <a href="https://wa.me/+995555162751" class="btn-ghost" target="_blank" rel="noopener noreferrer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.203 0-4.247-.712-5.906-1.924l-.412-.31-2.647.888.888-2.647-.31-.412A9.96 9.96 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+      WhatsApp
+    </a>
+  </div>
+
+  <div class="delivery-badge">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    Delivery across Batumi
+  </div>
+
+  <div class="hero-scroll" aria-hidden="true">
+    <svg viewBox="0 0 20 32" fill="none" stroke-width="1.5" stroke-linecap="round">
+      <rect x="1" y="1" width="18" height="30" rx="9" stroke="currentColor"/>
+      <line x1="10" y1="8" x2="10" y2="14" stroke="currentColor">
+        <animate attributeName="y1" values="8;12;8" dur="1.5s" repeatCount="indefinite"/>
+        <animate attributeName="y2" values="14;18;14" dur="1.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+      </line>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════ TRUST BAR ═══════════════════════ -->
+<section class="trust-bar" data-reveal>
+  <div class="container">
+    <div class="trust-grid">
+      <div class="trust-item">
+        <div class="trust-item-number">24</div>
+        <div class="trust-item-label">Pieces per set</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-item-number">14</div>
+        <div class="trust-item-label">Signature sauces</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-item-number">5</div>
+        <div class="trust-item-label">Sets daily limit</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-item-number">60'</div>
+        <div class="trust-item-label">Max delivery</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ MENU ═══════════════════════ -->
+<section id="menu">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <p class="section-eyebrow">The Collection</p>
+      <h2 class="section-title">Menu · Phase 1</h2>
+      <p class="section-subtitle">8 positions. Three tiers of craft. Premium ingredients, collectible packaging.</p>
+    </div>
+
+    <!-- Tier Tabs -->
+    <div class="menu-tabs" role="tablist">
+      <button class="menu-tab active" data-tab="all" role="tab">All</button>
+      <button class="menu-tab" data-tab="t1" role="tab">Classic</button>
+      <button class="menu-tab" data-tab="t2" role="tab">Elevated</button>
+      <button class="menu-tab" data-tab="t3" role="tab">Signature</button>
+    </div>
+
+    <!-- Menu List -->
+    <div id="menuList">
+      <!-- TIER 1 -->
+      <div class="menu-tier-group" data-tier="t1" data-reveal>
+        <div class="menu-tier-label">Tier 1 · Classic Premium</div>
+
+        <div class="menu-item" data-detail="philadelphia">
+          <div class="menu-item-thumb">&#127843;<div class="menu-item-badge"></div></div>
+          <div class="menu-item-body">
+            <div class="menu-item-tier">Star · 8 pcs</div>
+            <div class="menu-item-name">Philadelphia Signature</div>
+            <div class="menu-item-sub">Salmon · Cream Cheese · Avocado</div>
+          </div>
+          <div class="menu-item-right">
+            <div class="menu-item-price"><span class="cur">&#8382;</span>55</div>
+            <div class="menu-item-arrow">&#8250;</div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-detail="california">
+          <div class="menu-item-thumb">&#129408;<div class="menu-item-badge"></div></div>
+          <div class="menu-item-body">
+            <div class="menu-item-tier">Star · 8 pcs</div>
+            <div class="menu-item-name">California Black Sea</div>
+            <div class="menu-item-sub">Crab · Tobiko · Avocado</div>
+          </div>
+          <div class="menu-item-right">
+            <div class="menu-item-price"><span class="cur">&#8382;</span>60</div>
+            <div class="menu-item-arrow">&#8250;</div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-detail="spicy">
+          <div class="menu-item-thumb">&#127798;&#65039;<div class="menu-item-badge"></div></div>
+          <div class="menu-item-body">
+            <div class="menu-item-tier">Star · 8 pcs</div>
+            <div class="menu-item-name">Spicy Salmon Crunch</div>
+            <div class="menu-item-sub">Spicy Salmon · Crispy Onion · Tobiko</div>
+          </div>
+          <div class="menu-item-right">
+            <div class="menu-item-price"><span class="cur">&#8382;</span>58</div>
+            <div class="menu-item-arrow">&#8250;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIER 2 -->
+      <div class="menu-tier-group" data-tier="t2" data-reveal>
+        <div class="menu-tier-label">Tier 2 · Elevated</div>
+
+        <div class="menu-item" data-detail="unagi">
+          <div class="menu-item-thumb">&#128293;</div>
+          <div class="menu-item-body">
+            <div class="menu-item-tier">Star · 8 pcs</div>
+            <div class="menu-item-name">Unagi Dragon Roll</div>
+            <div class="menu-item-sub">Smoked Eel · Avocado · Eel Glaze</div>
+          </div>
+          <div class="menu-item-right">
+            <div class="menu-item-price"><span class="cur">&#8382;</span>72</div>
+            <div class="menu-item-arrow">&#8250;</div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-detail="shrimp">
+          <div class="menu-item-thumb">&#127844;</div>
+          <div class="menu-item-body">
+            <div class="menu-item-tier">Elevated · 8 pcs</div>
+            <div class="menu-item-name">Black Garlic Shrimp</div>
+            <div class="menu-item-sub">Tiger Shrimp · Black Garlic Mayo</div>
+          </div>
+          <div class="menu-item-right">
+            <div class="menu-item-price"><span class="cur">&#8382;</span>65</div>
+            <div class="menu-item-arrow">&#8250;</div>
+          </div>
+        </div>
+
+        <div class="menu-item" data-detail="nigiri">
+          <div class="menu-item-thumb">&#10024;</div>
+          <div class="menu-item-body">
+            <div class="menu-item-tier">Signature · 2 pcs</div>
+            <div class="menu-item-name">Torched Salmon Nigiri</div>
+            <div class="menu-item-sub">Torched Nigiri · Yuzu Mayo · Sesame</div>
+          </div>
+          <div class="menu-item-right">
+            <div class="menu-item-pcs">in set</div>
+            <div class="menu-item-arrow">&#8250;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIER 3 -->
+      <div class="menu-tier-group" data-tier="t3" data-reveal>
+        <div class="menu-tier-label">Tier 3 · Signature & Gifting</div>
+
+        <div class="menu-item" data-detail="onigiri">
+          <div class="menu-item-thumb">&#128314;</div>
+          <div class="menu-item-body">
+            <div class="menu-item-tier">Puzzle · 2 pcs</div>
+            <div class="menu-item-name">Omakase Onigiri Duo</div>
+            <div class="menu-item-sub">Salmon · Unagi · Lux Wrap</div>
+          </div>
+          <div class="menu-item-right">
+            <div class="menu-item-price"><span class="cur">&#8382;</span>38</div>
+            <div class="menu-item-arrow">&#8250;</div>
+          </div>
+        </div>
+
+        <!-- Flagship -->
+        <div class="menu-item flagship" data-detail="clanset">
+          <div class="menu-item-thumb">&#128081;</div>
+          <div class="menu-item-body">
+            <span class="flagship-tag">Flagship</span>
+            <div class="menu-item-name">Clan Set</div>
+            <div class="menu-item-sub">24 pcs · Premium Box · 3D Souvenir</div>
+          </div>
+          <div class="menu-item-right">
+            <div class="menu-item-price"><span class="cur">&#8382;</span>270</div>
+            <div class="menu-item-arrow">&#8250;</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ ITEM DETAIL OVERLAYS ═══════════════════════ -->
+<!-- Philadelphia Signature -->
+<div class="item-detail-overlay" id="detail-philadelphia">
+  <div class="item-detail-banner">
+    <button class="item-detail-back" data-close="philadelphia">&#8249;</button>
+    <div class="item-detail-banner-icon">&#127843;</div>
+    <div class="item-detail-banner-hint">Photo coming soon</div>
+    <div class="item-detail-tier-badge">Tier 1 · Classic</div>
+    <div class="item-detail-pcs-badge">8 pcs</div>
+  </div>
+  <div class="item-detail-content">
+    <div class="item-detail-tag">Star</div>
+    <div class="item-detail-name">Philadelphia Signature</div>
+    <div class="item-detail-sub">Salmon · Cream Cheese · Avocado · Cucumber</div>
+    <p class="item-detail-desc">A market classic executed at a premium level. Norwegian lightly-salted salmon, Philadelphia cream cheese, Hass avocado, Japanese sushi rice with mirin. Served with yuzu soy and pickled ginger.</p>
+    <div class="item-detail-divider"></div>
+    <div class="item-detail-ingredients">
+      <div class="item-detail-ingredients-title">Ingredients</div>
+      <div class="item-detail-ingredients-list">
+        <span class="ingredient-chip">Norwegian Salmon</span>
+        <span class="ingredient-chip">Philadelphia Cream Cheese</span>
+        <span class="ingredient-chip">Hass Avocado</span>
+        <span class="ingredient-chip">Japanese Cucumber</span>
+        <span class="ingredient-chip">Sushi Rice</span>
+        <span class="ingredient-chip">Premium Nori</span>
+        <span class="ingredient-chip">Yuzu Soy Dip</span>
+        <span class="ingredient-chip">Pickled Ginger</span>
+      </div>
+    </div>
+    <div class="item-detail-bottom">
+      <div>
+        <div class="item-detail-price-label">Price</div>
+        <div class="item-detail-price-val"><span class="item-detail-price-cur">&#8382;</span>55</div>
+      </div>
+      <button class="item-detail-order-btn" data-item-id="philadelphia" data-item-name="Philadelphia Signature" data-item-price="55" data-item-emoji="&#127843;">Add to Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- California Black Sea -->
+<div class="item-detail-overlay" id="detail-california">
+  <div class="item-detail-banner">
+    <button class="item-detail-back" data-close="california">&#8249;</button>
+    <div class="item-detail-banner-icon">&#129408;</div>
+    <div class="item-detail-banner-hint">Photo coming soon</div>
+    <div class="item-detail-tier-badge">Tier 1 · Classic</div>
+    <div class="item-detail-pcs-badge">8 pcs</div>
+  </div>
+  <div class="item-detail-content">
+    <div class="item-detail-tag">Star</div>
+    <div class="item-detail-name">California Black Sea</div>
+    <div class="item-detail-sub">Crab · Tobiko · Avocado · Cucumber · Sesame</div>
+    <p class="item-detail-desc">A California roll with a local edge: Black Sea tobiko instead of masago, tiger prawn at the center. Sesame crust on the outside, crispy onion top. Uramaki — rice on the outside.</p>
+    <div class="item-detail-divider"></div>
+    <div class="item-detail-ingredients">
+      <div class="item-detail-ingredients-title">Ingredients</div>
+      <div class="item-detail-ingredients-list">
+        <span class="ingredient-chip">Tiger Prawn / Snow Crab</span>
+        <span class="ingredient-chip">Black Sea Tobiko</span>
+        <span class="ingredient-chip">Hass Avocado</span>
+        <span class="ingredient-chip">Cucumber</span>
+        <span class="ingredient-chip">Cream Cheese</span>
+        <span class="ingredient-chip">Sesame</span>
+        <span class="ingredient-chip">Crispy Onion Top</span>
+      </div>
+    </div>
+    <div class="item-detail-bottom">
+      <div>
+        <div class="item-detail-price-label">Price</div>
+        <div class="item-detail-price-val"><span class="item-detail-price-cur">&#8382;</span>60</div>
+      </div>
+      <button class="item-detail-order-btn" data-item-id="california" data-item-name="California Black Sea" data-item-price="60" data-item-emoji="&#129408;">Add to Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- Spicy Salmon Crunch -->
+<div class="item-detail-overlay" id="detail-spicy">
+  <div class="item-detail-banner">
+    <button class="item-detail-back" data-close="spicy">&#8249;</button>
+    <div class="item-detail-banner-icon">&#127798;&#65039;</div>
+    <div class="item-detail-banner-hint">Photo coming soon</div>
+    <div class="item-detail-tier-badge">Tier 1 · Classic</div>
+    <div class="item-detail-pcs-badge">8 pcs</div>
+  </div>
+  <div class="item-detail-content">
+    <div class="item-detail-tag">Star</div>
+    <div class="item-detail-name">Spicy Salmon Crunch</div>
+    <div class="item-detail-sub">Spicy Salmon · Crispy Onion · Spicy Mayo · Tobiko</div>
+    <p class="item-detail-desc">A hot roll without frying — crispy onion in the filling delivers crunch, Japanese spicy mayo + sriracha bring the heat. Torched on top with a final yuzu kosho mayo drop. Maximum texture contrast.</p>
+    <div class="item-detail-divider"></div>
+    <div class="item-detail-ingredients">
+      <div class="item-detail-ingredients-title">Ingredients</div>
+      <div class="item-detail-ingredients-list">
+        <span class="ingredient-chip">Norwegian Salmon</span>
+        <span class="ingredient-chip">Spicy Mayo (Kewpie + Sriracha)</span>
+        <span class="ingredient-chip">Crispy Onion</span>
+        <span class="ingredient-chip">Black Sea Tobiko</span>
+        <span class="ingredient-chip">Yuzu Kosho Mayo</span>
+        <span class="ingredient-chip">Spring Onion</span>
+        <span class="ingredient-chip">Nori · Rice</span>
+      </div>
+    </div>
+    <div class="item-detail-bottom">
+      <div>
+        <div class="item-detail-price-label">Price</div>
+        <div class="item-detail-price-val"><span class="item-detail-price-cur">&#8382;</span>58</div>
+      </div>
+      <button class="item-detail-order-btn" data-item-id="spicy" data-item-name="Spicy Salmon Crunch" data-item-price="58" data-item-emoji="&#127798;">Add to Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- Unagi Dragon Roll -->
+<div class="item-detail-overlay" id="detail-unagi">
+  <div class="item-detail-banner">
+    <button class="item-detail-back" data-close="unagi">&#8249;</button>
+    <div class="item-detail-banner-icon">&#128293;</div>
+    <div class="item-detail-banner-hint">Photo coming soon</div>
+    <div class="item-detail-tier-badge">Tier 2 · Elevated</div>
+    <div class="item-detail-pcs-badge">8 pcs</div>
+  </div>
+  <div class="item-detail-content">
+    <div class="item-detail-tag">Star · Puzzle</div>
+    <div class="item-detail-name">Unagi Dragon Roll</div>
+    <div class="item-detail-sub">Smoked Eel · Avocado · Eel Glaze · Sesame</div>
+    <p class="item-detail-desc">Dragon roll — eel on the outside, salmon inside, avocado fan layered on top. House-made eel glaze from mirin, soy and sake. Finished with a torch for caramelization.</p>
+    <div class="item-detail-divider"></div>
+    <div class="item-detail-ingredients">
+      <div class="item-detail-ingredients-title">Ingredients</div>
+      <div class="item-detail-ingredients-list">
+        <span class="ingredient-chip">Unagi (Smoked Eel)</span>
+        <span class="ingredient-chip">Norwegian Salmon</span>
+        <span class="ingredient-chip">Hass Avocado</span>
+        <span class="ingredient-chip">Cream Cheese</span>
+        <span class="ingredient-chip">Cucumber</span>
+        <span class="ingredient-chip">Eel Glaze (Mirin / Soy / Sake)</span>
+        <span class="ingredient-chip">Black & White Sesame</span>
+      </div>
+    </div>
+    <div class="item-detail-bottom">
+      <div>
+        <div class="item-detail-price-label">Price</div>
+        <div class="item-detail-price-val"><span class="item-detail-price-cur">&#8382;</span>72</div>
+      </div>
+      <button class="item-detail-order-btn" data-item-id="unagi" data-item-name="Unagi Dragon Roll" data-item-price="72" data-item-emoji="&#128293;">Add to Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- Black Garlic Shrimp -->
+<div class="item-detail-overlay" id="detail-shrimp">
+  <div class="item-detail-banner">
+    <button class="item-detail-back" data-close="shrimp">&#8249;</button>
+    <div class="item-detail-banner-icon">&#127844;</div>
+    <div class="item-detail-banner-hint">Photo coming soon</div>
+    <div class="item-detail-tier-badge">Tier 2 · Elevated</div>
+    <div class="item-detail-pcs-badge">8 pcs</div>
+  </div>
+  <div class="item-detail-content">
+    <div class="item-detail-tag">Elevated</div>
+    <div class="item-detail-name">Black Garlic Shrimp Roll</div>
+    <div class="item-detail-sub">Tiger Shrimp · Black Garlic Mayo · Crispy Nori</div>
+    <p class="item-detail-desc">Tempura shrimp inside with black garlic mayo — fermented black garlic adds depth without sharpness. Topped with a crispy nori sheet and chilli threads. Umami + sweetness + crunch.</p>
+    <div class="item-detail-divider"></div>
+    <div class="item-detail-ingredients">
+      <div class="item-detail-ingredients-title">Ingredients</div>
+      <div class="item-detail-ingredients-list">
+        <span class="ingredient-chip">Tiger Shrimp Tempura</span>
+        <span class="ingredient-chip">Black Garlic Mayo (Kewpie)</span>
+        <span class="ingredient-chip">Avocado</span>
+        <span class="ingredient-chip">Cucumber</span>
+        <span class="ingredient-chip">Crispy Nori Top</span>
+        <span class="ingredient-chip">Chilli Threads</span>
+        <span class="ingredient-chip">Sesame · Nori · Rice</span>
+      </div>
+    </div>
+    <div class="item-detail-bottom">
+      <div>
+        <div class="item-detail-price-label">Price</div>
+        <div class="item-detail-price-val"><span class="item-detail-price-cur">&#8382;</span>65</div>
+      </div>
+      <button class="item-detail-order-btn" data-item-id="shrimp" data-item-name="Black Garlic Shrimp Roll" data-item-price="65" data-item-emoji="&#127844;">Add to Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- Torched Salmon Nigiri -->
+<div class="item-detail-overlay" id="detail-nigiri">
+  <div class="item-detail-banner">
+    <button class="item-detail-back" data-close="nigiri">&#8249;</button>
+    <div class="item-detail-banner-icon">&#10024;</div>
+    <div class="item-detail-banner-hint">Photo coming soon</div>
+    <div class="item-detail-tier-badge">Tier 2 · Signature</div>
+    <div class="item-detail-pcs-badge">2 pcs · in set</div>
+  </div>
+  <div class="item-detail-content">
+    <div class="item-detail-tag">Signature</div>
+    <div class="item-detail-name">Torched Salmon Nigiri</div>
+    <div class="item-detail-sub">Torched Nigiri · Yuzu Mayo · Sesame · Micro Chive</div>
+    <p class="item-detail-desc">2 nigiri as a signature element inside the premium set. Pressed rice ball, thinly sliced salmon, torched to Maillard reaction, finished with yuzu mayo, sesame and micro chive.</p>
+    <div class="item-detail-divider"></div>
+    <div class="item-detail-ingredients">
+      <div class="item-detail-ingredients-title">Ingredients</div>
+      <div class="item-detail-ingredients-list">
+        <span class="ingredient-chip">Norwegian Salmon (10 min cure)</span>
+        <span class="ingredient-chip">Premium Sushi Rice</span>
+        <span class="ingredient-chip">Yuzu Mayo (Kewpie + Yuzu Zest)</span>
+        <span class="ingredient-chip">White Sesame</span>
+        <span class="ingredient-chip">Micro Chive / Spring Onion</span>
+      </div>
+    </div>
+    <div class="item-detail-bottom">
+      <div>
+        <div class="item-detail-price-label">Included in</div>
+        <div class="item-detail-inset-note">Clan Set &#8382;270</div>
+        <div class="item-detail-sub" style="margin:0.2rem 0 0;">Not sold separately</div>
+      </div>
+      <button class="item-detail-order-btn" onclick="App.closeItemDetail('nigiri'); App.openItemDetail('clanset');">View Set</button>
+    </div>
+  </div>
+</div>
+
+<!-- Omakase Onigiri Duo -->
+<div class="item-detail-overlay" id="detail-onigiri">
+  <div class="item-detail-banner">
+    <button class="item-detail-back" data-close="onigiri">&#8249;</button>
+    <div class="item-detail-banner-icon">&#128314;</div>
+    <div class="item-detail-banner-hint">Photo coming soon</div>
+    <div class="item-detail-tier-badge">Tier 3 · Signature</div>
+    <div class="item-detail-pcs-badge">2 pcs</div>
+  </div>
+  <div class="item-detail-content">
+    <div class="item-detail-tag">Puzzle</div>
+    <div class="item-detail-name">Omakase Onigiri Duo</div>
+    <div class="item-detail-sub">Triangle Sushi · 2 Flavors · Lux Wrap</div>
+    <p class="item-detail-desc">The only premium onigiri in Batumi. 2 pieces: salmon + miso butter + sesame, and unagi + eel glaze + black sesame. Double-sided premium nori wrap. Sushi Clan signature paper.</p>
+    <div class="item-detail-divider"></div>
+    <div class="item-detail-ingredients">
+      <div class="item-detail-ingredients-title">Ingredients</div>
+      <div class="item-detail-ingredients-list">
+        <span class="ingredient-chip">Short-Grain Onigiri Rice</span>
+        <span class="ingredient-chip">Salmon + Miso Butter</span>
+        <span class="ingredient-chip">Unagi + Eel Glaze</span>
+        <span class="ingredient-chip">Premium Nori (double-sided)</span>
+        <span class="ingredient-chip">Black & White Sesame</span>
+      </div>
+    </div>
+    <div class="item-detail-bottom">
+      <div>
+        <div class="item-detail-price-label">Price</div>
+        <div class="item-detail-price-val"><span class="item-detail-price-cur">&#8382;</span>38</div>
+      </div>
+      <button class="item-detail-order-btn" data-item-id="onigiri" data-item-name="Omakase Onigiri Duo" data-item-price="38" data-item-emoji="&#128314;">Add to Order</button>
+    </div>
+  </div>
+</div>
+
+<!-- Clan Set (Flagship) -->
+<div class="item-detail-overlay" id="detail-clanset">
+  <div class="item-detail-banner" style="background: var(--color-surface-2); border-bottom-color: rgba(201,168,76,0.15);">
+    <button class="item-detail-back" data-close="clanset">&#8249;</button>
+    <div class="item-detail-banner-icon">&#128081;</div>
+    <div class="item-detail-banner-hint">Photo coming soon</div>
+    <div class="item-detail-tier-badge">Flagship · Tier 3</div>
+    <div class="item-detail-pcs-badge">24 pcs</div>
+  </div>
+  <div class="item-detail-content">
+    <div class="item-detail-tag">Flagship</div>
+    <div class="item-detail-name">Clan Set · 24 pcs</div>
+    <div class="item-detail-sub">Flagship Set · Exclusive Box · 3D Souvenir</div>
+    <p class="item-detail-desc">The brand's main commercial product. 24 pieces — choose 3 from the first 4 rolls on the menu. Premium black box with gold logo. Inside: a 3D-printed Sushi Clan signature souvenir.</p>
+    <div class="item-detail-divider"></div>
+    <div class="item-detail-ingredients">
+      <div class="item-detail-ingredients-title">What's Inside</div>
+      <div class="item-detail-ingredients-list">
+        <span class="ingredient-chip">Philadelphia Signature ×8</span>
+        <span class="ingredient-chip">Spicy Salmon Crunch ×8</span>
+        <span class="ingredient-chip">Unagi Dragon ×8 or California ×8</span>
+        <span class="ingredient-chip">Torched Nigiri ×2</span>
+        <span class="ingredient-chip">Premium Black Box</span>
+        <span class="ingredient-chip">3D-Printed PETG Souvenir</span>
+        <span class="ingredient-chip">Natural Wasabi</span>
+        <span class="ingredient-chip">Pickled Ginger</span>
+        <span class="ingredient-chip">Signature Yuzu Soy</span>
+      </div>
+    </div>
+    <div class="item-detail-bottom">
+      <div>
+        <div class="item-detail-price-label">Price</div>
+        <div class="item-detail-price-val"><span class="item-detail-price-cur">&#8382;</span>270</div>
+      </div>
+      <button class="item-detail-order-btn" data-item-id="clanset" data-item-name="Clan Set 24 pcs" data-item-price="270" data-item-emoji="&#128081;">Order Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ PHILOSOPHY ═══════════════════════ -->
+<section class="philosophy" id="philosophy">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <p class="section-eyebrow">Our Philosophy</p>
+      <h2 class="section-title">Why Sushi Clan</h2>
+    </div>
+    <div class="philosophy-grid">
+      <div class="philosophy-item" data-reveal>
+        <span class="philosophy-icon">&#127823;</span>
+        <h3>Sashimi-Grade Only</h3>
+        <p>Norwegian salmon, premium tuna cuts, and imported unagi. No shortcuts on ingredients — every fish meets sashimi-grade standards.</p>
+      </div>
+      <div class="philosophy-item" data-reveal>
+        <span class="philosophy-icon">&#127873;</span>
+        <h3>Collectible Packaging</h3>
+        <p>Each set arrives in a custom box with a presentation insert — a keepsake designed to be collected, not discarded.</p>
+      </div>
+      <div class="philosophy-item" data-reveal>
+        <span class="philosophy-icon">&#128300;</span>
+        <h3>14 Signature Sauces</h3>
+        <p>From truffle-miso to mango-chili, from tkemali-ponzu to black garlic tare. Developed specifically for each set tier.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ HOW IT WORKS ═══════════════════════ -->
+<section id="how">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <p class="section-eyebrow">Experience</p>
+      <h2 class="section-title">How to Order</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card" data-reveal>
+        <h3>Choose</h3>
+        <p>Pick your tier — Classic, Signature, or Omakase. Each set tells a different culinary story.</p>
+      </div>
+      <div class="step-card" data-reveal>
+        <h3>Pin Location</h3>
+        <p>Drop your exact delivery point on the map. We deliver across Batumi within 60 minutes.</p>
+      </div>
+      <div class="step-card" data-reveal>
+        <h3>We Craft</h3>
+        <p>Your set is prepared to order by our chefs. No pre-made batches, ever.</p>
+      </div>
+      <div class="step-card" data-reveal>
+        <h3>Unbox</h3>
+        <p>Receive your premium box with the collector's insert, sauces, and everything you need.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ BLOG ═══════════════════════ -->
+<section id="blog" style="background: var(--color-surface); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <p class="section-eyebrow">The Journal</p>
+      <h2 class="section-title">Behind the Craft</h2>
+      <p class="section-subtitle">Stories about our ingredients, techniques, and the culture behind premium sushi.</p>
+    </div>
+
+    <div class="blog-grid">
+      <article class="blog-card" data-reveal tabindex="0" role="button" aria-label="Read article: What Makes Salmon Sashimi-Grade?" data-article="0">
+        <div class="blog-card-img">&#128032;</div>
+        <div class="blog-card-body">
+          <p class="blog-card-tag">Ingredients</p>
+          <h3 class="blog-card-title">What Makes Salmon "Sashimi-Grade"?</h3>
+          <p class="blog-card-excerpt">Not all salmon is created equal. The journey from Norwegian fjords to your set — temperature, timing, and trust.</p>
+          <p class="blog-card-date">Read article &rarr;</p>
+        </div>
+      </article>
+
+      <article class="blog-card" data-reveal tabindex="0" role="button" aria-label="Read article: The Rice Makes the Sushi" data-article="1">
+        <div class="blog-card-img">&#127834;</div>
+        <div class="blog-card-body">
+          <p class="blog-card-tag">Technique</p>
+          <h3 class="blog-card-title">The Rice Makes the Sushi</h3>
+          <p class="blog-card-excerpt">Why we use Japonica short-grain rice and why the temperature of every single grain matters.</p>
+          <p class="blog-card-date">Read article &rarr;</p>
+        </div>
+      </article>
+
+      <article class="blog-card" data-reveal tabindex="0" role="button" aria-label="Read article: How We Keep Delivery Fresh in Batumi" data-article="2">
+        <div class="blog-card-img">&#10052;&#65039;</div>
+        <div class="blog-card-body">
+          <p class="blog-card-tag">Operations</p>
+          <h3 class="blog-card-title">How We Keep Delivery Fresh in Batumi</h3>
+          <p class="blog-card-excerpt">From kitchen to door in under 60 minutes — the cold chain, the packaging, and why it matters.</p>
+          <p class="blog-card-date">Read article &rarr;</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ REVIEWS ═══════════════════════ -->
+<section id="reviews">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <p class="section-eyebrow">Voices</p>
+      <h2 class="section-title">What They Say</h2>
+    </div>
+
+    <div class="reviews-list" id="reviewsList">
+      <div class="review-card" data-reveal>
+        <div class="review-stars">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+        <p class="review-text">"The unboxing experience alone was worth it. The sushi was impeccable — the torched unagi set was unlike anything I've had in Batumi."</p>
+        <div class="review-author">
+          <div class="review-avatar">M</div>
+          <div class="review-author-info">
+            <strong>Mark T.</strong>
+            <span>Expat · Batumi</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card" data-reveal>
+        <div class="review-stars">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+        <p class="review-text">"Ordered the Omakase for my wife's birthday. She collects the inserts now. The nigiri quality rivals what we had in Tokyo."</p>
+        <div class="review-author">
+          <div class="review-avatar">A</div>
+          <div class="review-author-info">
+            <strong>Anna K.</strong>
+            <span>Tourist · Germany</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card" data-reveal>
+        <div class="review-stars">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+        <p class="review-text">"Finally, sushi in Batumi that doesn't compromise on fish quality. The sauce collection is a game-changer."</p>
+        <div class="review-author">
+          <div class="review-avatar">D</div>
+          <div class="review-author-info">
+            <strong>David R.</strong>
+            <span>Digital Nomad</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card" data-reveal>
+        <div class="review-stars">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+        <p class="review-text">"გემრიელი სუში. ძალიან საინტერესო პრეზენტაციით, აზიურ სტილში სხვადასხვა ფიგურებით."</p>
+        <div class="review-author">
+          <div class="review-avatar">&#4316;</div>
+          <div class="review-author-info">
+            <strong>Nino G.</strong>
+            <span>Local · Batumi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review form -->
+    <div class="review-form-wrap" data-reveal>
+      <button class="btn-ghost" id="writeReviewBtn">Share Your Experience</button>
+      <div class="review-form-container" id="reviewFormContainer">
+        <div class="star-picker" id="starPicker" role="radiogroup" aria-label="Rating">
+          <button type="button" data-star="1" aria-label="1 star">&#9733;</button>
+          <button type="button" data-star="2" aria-label="2 stars">&#9733;</button>
+          <button type="button" data-star="3" aria-label="3 stars">&#9733;</button>
+          <button type="button" data-star="4" aria-label="4 stars">&#9733;</button>
+          <button type="button" data-star="5" aria-label="5 stars">&#9733;</button>
+        </div>
+        <div class="form-group">
+          <label for="reviewText">Your Review</label>
+          <textarea id="reviewText" class="form-input" rows="3" placeholder="Tell us about your experience..."></textarea>
+        </div>
+        <button class="btn-submit" id="submitReviewBtn">Submit Review</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FAQ ═══════════════════════ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-header" data-reveal>
+      <p class="section-eyebrow">Questions</p>
+      <h2 class="section-title">Frequently Asked</h2>
+    </div>
+    <div class="faq-list" data-reveal>
+      <details class="faq-item">
+        <summary class="faq-question">What's included in each set?</summary>
+        <div class="faq-answer">Every set includes 24 pieces of sushi, a curated selection of our signature sauces, wasabi, pickled ginger, premium soy sauce, chopsticks, and a collectible presentation insert. Omakase tier includes additional premium garnishes.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-question">How far do you deliver?</summary>
+        <div class="faq-answer">We deliver across all of Batumi. During checkout you'll pin your exact location on the map. Delivery is included in the set price for addresses within the city limits. Maximum delivery time is 60 minutes.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-question">Do you use real wasabi?</summary>
+        <div class="faq-answer">Our Signature and Omakase tiers include freshly prepared wasabi from imported roots — not the standard horseradish-based paste. Classic tier includes our premium house-blended wasabi.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-question">Can I customize a set?</summary>
+        <div class="faq-answer">Omakase sets can be customized based on dietary preferences. For Classic and Signature tiers, we maintain the curated composition, but you can note allergies. Contact us via WhatsApp for special requests.</div>
+      </details>
+      <details class="faq-item">
+        <summary class="faq-question">Why only 5 sets per day?</summary>
+        <div class="faq-answer">Quality over quantity. Each set is handcrafted to order using sashimi-grade ingredients. Limiting production ensures every piece meets our standards. Pre-order recommended.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FINAL CTA ═══════════════════════ -->
+<section class="cta-section">
+  <div class="container" data-reveal>
+    <p class="section-eyebrow">Ready?</p>
+    <h2 class="section-title">Order Your Set Today</h2>
+    <p class="section-subtitle">Limited to 5 sets daily. Pre-order via WhatsApp or follow us on Instagram for drop announcements.</p>
+    <div class="cta-buttons">
+      <a href="https://wa.me/+995555162751?text=Hello%2C%20I'd%20like%20to%20order" class="btn-whatsapp" target="_blank" rel="noopener noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.203 0-4.247-.712-5.906-1.924l-.412-.31-2.647.888.888-2.647-.31-.412A9.96 9.96 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+        Order on WhatsApp
+      </a>
+      <a href="https://www.instagram.com/sushi_clan_premium?igsh=bzV1bGZ1cmYzdWFv" class="btn-instagram" target="_blank" rel="noopener noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        Follow on Instagram
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-brand-name">SUSHI CLAN</span>
+        <span class="footer-brand-sub">Private Kitchen · Batumi, Georgia</span>
+      </div>
+      <div class="footer-links">
+        <a href="#menu">Menu</a>
+        <a href="#philosophy">About</a>
+        <a href="#blog">Journal</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://wa.me/+995555162751" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        <a href="https://www.instagram.com/sushi_clan_premium?igsh=bzV1bGZ1cmYzdWFv" target="_blank" rel="noopener noreferrer">Instagram</a>
+      </div>
+    </div>
+    <p class="footer-copy">&copy; 2026 Sushi Clan. All rights reserved. Batumi, Georgia.</p>
+  </div>
+</footer>
+
+<!-- ═══════════════════════ FLOATING WHATSAPP ═══════════════════════ -->
+<a href="https://wa.me/+995555162751?text=Hello%20Sushi%20Clan!" class="fab-whatsapp" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.203 0-4.247-.712-5.906-1.924l-.412-.31-2.647.888.888-2.647-.31-.412A9.96 9.96 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+</a>
+
+<!-- ═══════════════════════ CART DRAWER ═══════════════════════ -->
+<div class="cart-drawer-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart" aria-modal="true">
+  <div class="cart-drawer-header">
+    <h2 class="cart-drawer-title">Your Cart</h2>
+    <button class="cart-drawer-close" id="cartClose" aria-label="Close cart">&times;</button>
+  </div>
+  <div class="cart-drawer-body" id="cartBody"></div>
+  <div class="cart-drawer-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total">
+      <span class="cart-total-label">Subtotal</span>
+      <span class="cart-total-value" id="cartTotal">0 GEL</span>
+    </div>
+    <button class="cart-checkout-btn" id="cartCheckoutBtn">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ AUTH MODAL ═══════════════════════ -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal" role="dialog" aria-label="Sign in" aria-modal="true">
+    <button class="modal-close" id="authClose" aria-label="Close">&times;</button>
+    <h2>Welcome</h2>
+    <p>Demo login for prototype flow.</p>
+
+    <!-- Auth views -->
+    <div id="authMain">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-auth-tab="signin">Sign In</button>
+        <button class="auth-tab" data-auth-tab="signup">Sign Up</button>
+      </div>
+
+      <button class="btn-google" id="googleLoginBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Demo Google Login
+      </button>
+
+      <div class="form-divider">or</div>
+
+      <!-- Sign In view -->
+      <div class="auth-view active" id="authSignin">
+        <div class="form-group">
+          <label for="signinPhone">Phone Number</label>
+          <input type="tel" id="signinPhone" class="form-input" placeholder="+995 5XX XXX XXX">
+        </div>
+        <button class="btn-submit" id="signinSendBtn">Send Demo OTP</button>
+      </div>
+
+      <!-- Sign Up view -->
+      <div class="auth-view" id="authSignup">
+        <div class="form-group">
+          <label for="signupName">Name</label>
+          <input type="text" id="signupName" class="form-input" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label for="signupPhone">Phone Number</label>
+          <input type="tel" id="signupPhone" class="form-input" placeholder="+995 5XX XXX XXX">
+        </div>
+        <button class="btn-submit" id="signupSendBtn">Send Demo OTP</button>
+      </div>
+
+      <p class="auth-demo-note">Demo login for prototype flow</p>
+    </div>
+
+    <!-- OTP view -->
+    <div id="authOtp" style="display:none;">
+      <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:1rem;">Enter any 4 digits to continue (Demo OTP)</p>
+      <div class="otp-inputs">
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" aria-label="OTP digit 1">
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" aria-label="OTP digit 2">
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" aria-label="OTP digit 3">
+        <input type="text" maxlength="1" class="otp-input" inputmode="numeric" aria-label="OTP digit 4">
+      </div>
+      <div class="otp-countdown" id="otpCountdown">Resend in <span id="otpTimer">30</span>s</div>
+      <button class="btn-submit" id="otpVerifyBtn">Verify &amp; Continue</button>
+      <p class="auth-demo-note">Demo OTP — any 4 digits accepted</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ PROFILE PANEL ═══════════════════════ -->
+<div class="profile-overlay" id="profileOverlay"></div>
+<div class="profile-panel" id="profilePanel" role="dialog" aria-label="Profile" aria-modal="true">
+  <div class="profile-header">
+    <div class="profile-user-info">
+      <h3 id="profileName">Guest</h3>
+      <p id="profilePhone"></p>
+      <p id="profileSince" style="margin-top:0.2rem;"></p>
+    </div>
+    <button class="profile-close" id="profileClose" aria-label="Close profile">&times;</button>
+  </div>
+  <div class="profile-body">
+    <p class="profile-section-label">Order History</p>
+    <div id="profileOrders"></div>
+  </div>
+  <div class="profile-footer">
+    <button class="profile-logout" id="logoutBtn">Sign Out</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ CHECKOUT ═══════════════════════ -->
+<div class="checkout-overlay" id="checkoutOverlay">
+  <div class="checkout-container">
+    <div class="checkout-header">
+      <button class="checkout-back" id="checkoutBack" aria-label="Go back">&larr; Back</button>
+      <span class="checkout-title">Checkout</span>
+      <button class="checkout-close" id="checkoutClose" aria-label="Close checkout">&times;</button>
+    </div>
+
+    <div class="checkout-steps" id="checkoutSteps">
+      <div class="checkout-step-dot active" data-step="1"></div>
+      <div class="checkout-step-line"></div>
+      <div class="checkout-step-dot" data-step="2"></div>
+      <div class="checkout-step-line"></div>
+      <div class="checkout-step-dot" data-step="3"></div>
+      <div class="checkout-step-line"></div>
+      <div class="checkout-step-dot" data-step="4"></div>
+    </div>
+
+    <!-- Step 1: Order Review -->
+    <div class="checkout-step active" id="checkoutStep1">
+      <h3 style="font-size:var(--text-lg);margin-bottom:1rem;letter-spacing:0.08em;text-transform:uppercase;">Review Your Order</h3>
+      <div id="checkoutItems"></div>
+      <div class="checkout-summary" id="checkoutSummary"></div>
+      <div class="form-group">
+        <label for="deliveryNote">Delivery Note (optional)</label>
+        <input type="text" id="deliveryNote" class="form-input" placeholder="Apartment, floor, gate code...">
+      </div>
+      <button class="checkout-next-btn" id="checkoutNext1">Continue to Delivery &rarr;</button>
+    </div>
+
+    <!-- Step 2: Delivery -->
+    <div class="checkout-step" id="checkoutStep2">
+      <h3 style="font-size:var(--text-lg);margin-bottom:0.5rem;letter-spacing:0.08em;text-transform:uppercase;">Delivery Location</h3>
+      <p style="font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:0.75rem;">Search an address or tap the map to pin your location.</p>
+
+      <div class="map-search-row">
+        <input type="text" id="mapSearchInput" class="map-search-input" placeholder="Search address in Batumi..." autocomplete="off">
+        <button type="button" class="map-search-btn" id="mapSearchBtn">Find</button>
+      </div>
+      <div class="map-search-result" id="mapSearchResult"></div>
+
+      <div class="checkout-map-container" id="mapContainer">
+        <div class="map-fallback" id="mapFallback">
+          <div class="map-fallback-icon">&#128205;</div>
+          <p style="font-size:var(--text-sm);">Loading map...</p>
+        </div>
+      </div>
+
+      <div class="map-pin-status" id="mapPinStatus">&#10003; Location pinned <span class="map-coords" id="mapCoords"></span></div>
+
+      <div class="map-actions">
+        <button class="checkout-geoloc-btn" id="geolocBtn" type="button">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+          Use my location
+        </button>
+        <a class="map-google-link" id="mapGoogleLink" href="#" target="_blank" rel="noopener noreferrer">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open in Google Maps
+        </a>
+      </div>
+
+      <div class="form-group" style="margin-top:1rem;">
+        <label for="deliveryAddress">Address / Description</label>
+        <input type="text" id="deliveryAddress" class="form-input" placeholder="Apartment, floor, building name...">
+      </div>
+      <button class="checkout-next-btn" id="checkoutNext2">Continue to Contact &rarr;</button>
+    </div>
+
+    <!-- Step 3: Contact + Payment -->
+    <div class="checkout-step" id="checkoutStep3">
+      <h3 style="font-size:var(--text-lg);margin-bottom:1rem;letter-spacing:0.08em;text-transform:uppercase;">Contact &amp; Payment</h3>
+      <div class="form-group">
+        <label for="contactName">Name</label>
+        <input type="text" id="contactName" class="form-input" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label for="contactPhone">Phone</label>
+        <input type="tel" id="contactPhone" class="form-input" placeholder="+995 5XX XXX XXX">
+      </div>
+      <div class="form-group">
+        <label>Payment Method</label>
+        <div class="payment-methods" id="paymentMethods">
+          <label class="payment-option selected">
+            <input type="radio" name="payment" value="cash" checked>
+            <span class="payment-radio"></span>
+            <span class="payment-label">Cash on Delivery</span>
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="payment" value="card">
+            <span class="payment-radio"></span>
+            <span class="payment-label">Card on Delivery</span>
+          </label>
+        </div>
+      </div>
+      <button class="checkout-next-btn" id="checkoutNext3">Place Order &rarr;</button>
+    </div>
+
+    <!-- Step 4: Confirmation -->
+    <div class="checkout-step" id="checkoutStep4">
+      <div class="checkout-success">
+        <div class="checkout-success-icon">&#10024;</div>
+        <h3>Order Confirmed</h3>
+        <div class="checkout-order-number" id="orderNumber"></div>
+        <p>Your set will be crafted to order. Estimated delivery within 60 minutes.</p>
+        <a id="waOrderLink" href="#" class="btn-whatsapp" target="_blank" rel="noopener noreferrer" style="margin-top:0.5rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.203 0-4.247-.712-5.906-1.924l-.412-.31-2.647.888.888-2.647-.31-.412A9.96 9.96 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+          Ask about your order on WhatsApp
+        </a>
+        <button class="btn-ghost" style="margin-top:1rem;width:100%;" onclick="App.closeCheckout()">Back to Menu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ BLOG ARTICLE MODAL ═══════════════════════ -->
+<div class="article-overlay" id="articleOverlay">
+  <div class="article-container">
+    <button class="article-back" id="articleClose">&larr; Back to Journal</button>
+    <div class="article-hero-emoji" id="articleEmoji"></div>
+    <p class="article-tag" id="articleTag"></p>
+    <h1 class="article-title" id="articleTitle"></h1>
+    <p class="article-meta" id="articleMeta"></p>
+    <div class="article-content" id="articleContent"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
+<script>
+/* ═══════════════════════════════════════════
+   APP CONTROLLER
+   ═══════════════════════════════════════════ */
+const App = (() => {
+  'use strict';
+
+  // ──── Security: HTML escape ────
+  const _escMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  function esc(str) { return String(str).replace(/[&<>"']/g, c => _escMap[c]); }
+
+  // ──── State ────
+  const STORAGE_KEY = 'sushi_clan_state';
+  let state = {
+    user: null,
+    cart: [],
+    orders: [],
+    reviews: [],
+    isLoggedIn: false,
+    seeded: false
+  };
+
+  // ──── Persistence ────
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        state = { ...state, ...parsed };
+      }
+    } catch (e) {
+      console.info('Sushi Clan: localStorage unavailable, using in-memory state.');
+    }
+  }
+
+  function saveState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) { /* graceful fallback */ }
+  }
+
+  // ──── Scroll lock ────
+  let scrollY = 0;
+  function lockScroll() {
+    scrollY = window.scrollY;
+    document.body.classList.add('scroll-locked');
+    document.body.style.top = `-${scrollY}px`;
+  }
+  function unlockScroll() {
+    document.body.classList.remove('scroll-locked');
+    document.body.style.top = '';
+    window.scrollTo(0, scrollY);
+  }
+
+  // ──── Focus trap helper ────
+  let openerEl = null;
+  function trapFocus(container) {
+    const focusable = container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (focusable.length) focusable[0].focus();
+  }
+
+  // ──── Toast ────
+  function toast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const el = document.createElement('div');
+    const icons = { success: '\u2713', error: '\u2717', info: '\u2139', warning: '\u26A0' };
+    el.className = `toast toast-${type}`;
+    el.innerHTML = `<span class="toast-icon">${icons[type] || ''}</span><span>${esc(message)}</span>`;
+    container.appendChild(el);
+    setTimeout(() => {
+      el.classList.add('removing');
+      setTimeout(() => el.remove(), 250);
+    }, 3000);
+  }
+
+  // ──── Mobile Menu ────
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const hamburger = document.getElementById('hamburger');
+    const isActive = menu.classList.toggle('active');
+    hamburger.classList.toggle('active', isActive);
+    if (isActive) lockScroll(); else unlockScroll();
+  }
+
+  // ──── Cart ────
+  function addToCart(id, name, price, emoji) {
+    const existing = state.cart.find(i => i.id === id);
+    if (existing) { existing.qty++; } else {
+      state.cart.push({ id, name, price: Number(price), qty: 1, emoji });
+    }
+    saveState();
+    updateCartBadge();
+    toast(`${name} added to cart`, 'success');
+  }
+
+  function updateQty(id, delta) {
+    const item = state.cart.find(i => i.id === id);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) state.cart = state.cart.filter(i => i.id !== id);
+    saveState();
+    updateCartBadge();
+    renderCart();
+  }
+
+  function removeFromCart(id) {
+    const item = state.cart.find(i => i.id === id);
+    state.cart = state.cart.filter(i => i.id !== id);
+    saveState();
+    updateCartBadge();
+    renderCart();
+    if (item) toast(`${item.name} removed`, 'info');
+  }
+
+  function getCartTotal() {
+    return state.cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  }
+
+  function getCartCount() {
+    return state.cart.reduce((sum, i) => sum + i.qty, 0);
+  }
+
+  function updateCartBadge() {
+    const badge = document.getElementById('cartBadge');
+    const count = getCartCount();
+    badge.textContent = count;
+    badge.classList.toggle('visible', count > 0);
+  }
+
+  function renderCart() {
+    const body = document.getElementById('cartBody');
+    const footer = document.getElementById('cartFooter');
+    if (state.cart.length === 0) {
+      body.innerHTML = `<div class="cart-empty"><div class="cart-empty-icon">\uD83C\uDF63</div><p>Your cart is empty</p><a href="#menu" class="btn-ghost" onclick="App.closeCart()" style="font-size:var(--text-xs);">Browse Menu</a></div>`;
+      footer.style.display = 'none';
+      return;
+    }
+    body.innerHTML = state.cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-emoji">${esc(item.emoji)}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${esc(item.name)}</div>
+          <div class="cart-item-price">${Number(item.price)} GEL</div>
+          <div class="cart-item-controls">
+            <button class="cart-qty-btn" onclick="App.updateQty('${esc(item.id)}',-1)" aria-label="Decrease quantity">&minus;</button>
+            <span class="cart-qty-value">${Number(item.qty)}</span>
+            <button class="cart-qty-btn" onclick="App.updateQty('${esc(item.id)}',1)" aria-label="Increase quantity">+</button>
+            <button class="cart-item-remove" onclick="App.removeFromCart('${esc(item.id)}')">Remove</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    footer.style.display = 'block';
+    document.getElementById('cartTotal').textContent = `${getCartTotal()} GEL`;
+  }
+
+  function openCart() {
+    renderCart();
+    document.getElementById('cartOverlay').classList.add('active');
+    document.getElementById('cartDrawer').classList.add('active');
+    lockScroll();
+    openerEl = document.activeElement;
+    trapFocus(document.getElementById('cartDrawer'));
+  }
+
+  function closeCart() {
+    document.getElementById('cartOverlay').classList.remove('active');
+    document.getElementById('cartDrawer').classList.remove('active');
+    unlockScroll();
+    if (openerEl) openerEl.focus();
+  }
+
+  // ──── Item Detail Overlays ────
+  function openItemDetail(id) {
+    const el = document.getElementById('detail-' + id);
+    if (el) { el.classList.add('open'); lockScroll(); }
+  }
+
+  function closeItemDetail(id) {
+    const el = document.getElementById('detail-' + id);
+    if (el) { el.classList.remove('open'); unlockScroll(); }
+  }
+
+  // ──── Auth ────
+  let authPhone = '';
+  let authName = '';
+  let otpInterval = null;
+
+  function openAuth() {
+    if (state.isLoggedIn) { openProfile(); return; }
+    document.getElementById('authModal').classList.add('active');
+    document.getElementById('authMain').style.display = '';
+    document.getElementById('authOtp').style.display = 'none';
+    lockScroll();
+    openerEl = document.activeElement;
+    trapFocus(document.getElementById('authModal'));
+  }
+
+  function closeAuth() {
+    document.getElementById('authModal').classList.remove('active');
+    clearInterval(otpInterval);
+    unlockScroll();
+    if (openerEl) openerEl.focus();
+  }
+
+  function switchAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.authTab === tab));
+    document.getElementById('authSignin').classList.toggle('active', tab === 'signin');
+    document.getElementById('authSignup').classList.toggle('active', tab === 'signup');
+  }
+
+  function startOtp(phone, name) {
+    const cleanPhone = (phone || '').replace(/[^\d+\s()-]/g, '').trim();
+    if (!cleanPhone || cleanPhone.replace(/\D/g, '').length < 9) {
+      toast('Please enter a valid phone number (9+ digits)', 'error');
+      return;
+    }
+    authPhone = phone;
+    authName = name || 'Guest';
+    document.getElementById('authMain').style.display = 'none';
+    document.getElementById('authOtp').style.display = '';
+    const otpInputs = document.querySelectorAll('.otp-input');
+    otpInputs.forEach(i => { i.value = ''; });
+    otpInputs[0].focus();
+    startOtpCountdown();
+  }
+
+  function startOtpCountdown() {
+    let seconds = 30;
+    const timerEl = document.getElementById('otpTimer');
+    const countdownEl = document.getElementById('otpCountdown');
+    timerEl.textContent = seconds;
+    countdownEl.innerHTML = `Resend in <span id="otpTimer">${seconds}</span>s`;
+    clearInterval(otpInterval);
+    otpInterval = setInterval(() => {
+      seconds--;
+      const timer = document.getElementById('otpTimer');
+      if (timer) timer.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(otpInterval);
+        countdownEl.innerHTML = `<button class="otp-resend" onclick="App.resendOtp()">Resend Demo OTP</button>`;
+      }
+    }, 1000);
+  }
+
+  function resendOtp() { startOtpCountdown(); toast('Demo OTP resent', 'info'); }
+
+  function verifyOtp() {
+    const digits = Array.from(document.querySelectorAll('.otp-input')).map(i => i.value).join('');
+    if (digits.length < 4) { toast('Please enter 4 digits', 'error'); return; }
+    completeLogin(authName, authPhone);
+  }
+
+  function googleLogin() {
+    completeLogin('Demo User', '+995 500 000 000');
+  }
+
+  function completeLogin(name, phone) {
+    state.user = {
+      name,
+      phone,
+      initial: name.charAt(0).toUpperCase(),
+      since: new Date().toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
+    };
+    state.isLoggedIn = true;
+    if (!state.seeded && state.orders.length === 0) {
+      seedDemoOrders();
+      state.seeded = true;
+    }
+    saveState();
+    updateNavProfile();
+    closeAuth();
+    toast(`Welcome, ${name}!`, 'success');
+  }
+
+  function seedDemoOrders() {
+    state.orders = [
+      {
+        id: 'SC-20260315-1430-A1B2',
+        items: [{ name: 'Signature Black Sea', qty: 1, price: 270 }],
+        total: 270,
+        status: 'delivered',
+        date: '15 Mar 2026',
+        contact: { name: 'Demo', phone: '' }
+      },
+      {
+        id: 'SC-20260308-1800-C3D4',
+        items: [{ name: 'Classic Premium', qty: 2, price: 180 }],
+        total: 360,
+        status: 'delivered',
+        date: '08 Mar 2026',
+        contact: { name: 'Demo', phone: '' }
+      }
+    ];
+  }
+
+  function logout() {
+    state.user = null;
+    state.isLoggedIn = false;
+    saveState();
+    updateNavProfile();
+    closeProfile();
+    toast('Signed out', 'info');
+  }
+
+  function updateNavProfile() {
+    const btn = document.getElementById('navProfile');
+    if (state.isLoggedIn && state.user) {
+      btn.textContent = state.user.initial;
+    } else {
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>';
+    }
+  }
+
+  // ──── Profile ────
+  function openProfile() {
+    if (!state.isLoggedIn) { openAuth(); return; }
+    document.getElementById('profileName').textContent = state.user.name;
+    document.getElementById('profilePhone').textContent = state.user.phone;
+    document.getElementById('profileSince').textContent = `Member since ${state.user.since}`;
+    renderOrders();
+    document.getElementById('profileOverlay').classList.add('active');
+    document.getElementById('profilePanel').classList.add('active');
+    lockScroll();
+    openerEl = document.activeElement;
+    trapFocus(document.getElementById('profilePanel'));
+  }
+
+  function closeProfile() {
+    document.getElementById('profileOverlay').classList.remove('active');
+    document.getElementById('profilePanel').classList.remove('active');
+    unlockScroll();
+    if (openerEl) openerEl.focus();
+  }
+
+  function renderOrders() {
+    const container = document.getElementById('profileOrders');
+    if (state.orders.length === 0) {
+      container.innerHTML = '<div class="profile-no-orders">No orders yet</div>';
+      return;
+    }
+    container.innerHTML = state.orders.map(o => `
+      <div class="profile-order">
+        <div class="profile-order-header">
+          <span class="profile-order-id">${esc(o.id)}</span>
+          <span class="profile-order-status ${o.status === 'delivered' ? 'delivered' : 'processing'}">${o.status === 'delivered' ? 'Delivered' : 'Processing'}</span>
+        </div>
+        <div class="profile-order-items">${o.items.map(i => `${Number(i.qty)}x ${esc(i.name)}`).join(', ')}</div>
+        <div class="profile-order-total">${Number(o.total)} GEL</div>
+        <div class="profile-order-date">${esc(o.date)}</div>
+      </div>
+    `).join('');
+  }
+
+  // ──── Checkout ────
+  let checkoutStep = 1;
+  let leafletLoaded = false;
+  let leafletMap = null;
+  let leafletMarker = null;
+  let deliveryCoords = null;
+
+  function openCheckout() {
+    if (state.cart.length === 0) { toast('Cart is empty', 'error'); return; }
+    closeCart();
+    checkoutStep = 1;
+    renderCheckoutStep1();
+    updateCheckoutDots();
+    showStep(1);
+    document.getElementById('checkoutOverlay').classList.add('active');
+    lockScroll();
+
+    // Prefill contact if logged in
+    if (state.isLoggedIn && state.user) {
+      document.getElementById('contactName').value = state.user.name;
+      document.getElementById('contactPhone').value = state.user.phone;
+    }
+    // Restore persisted delivery address
+    if (state.checkout && state.checkout.address) {
+      document.getElementById('deliveryAddress').value = state.checkout.address;
+    }
+  }
+
+  function closeCheckout() {
+    document.getElementById('checkoutOverlay').classList.remove('active');
+    unlockScroll();
+    checkoutStep = 1;
+  }
+
+  function showStep(n) {
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`checkoutStep${i}`).classList.toggle('active', i === n);
+    }
+    checkoutStep = n;
+    updateCheckoutDots();
+    document.getElementById('checkoutBack').style.visibility = n <= 1 ? 'hidden' : 'visible';
+    // Scroll to top of checkout
+    document.getElementById('checkoutOverlay').scrollTop = 0;
+    // Init map on step 2
+    if (n === 2) initMap();
+  }
+
+  function updateCheckoutDots() {
+    document.querySelectorAll('.checkout-step-dot').forEach(dot => {
+      const s = Number(dot.dataset.step);
+      dot.classList.toggle('active', s === checkoutStep);
+      dot.classList.toggle('done', s < checkoutStep);
+    });
+  }
+
+  function prevStep() {
+    if (checkoutStep > 1) showStep(checkoutStep - 1);
+  }
+
+  function renderCheckoutStep1() {
+    const itemsEl = document.getElementById('checkoutItems');
+    const summaryEl = document.getElementById('checkoutSummary');
+    const total = getCartTotal();
+    itemsEl.innerHTML = state.cart.map(item => `
+      <div class="checkout-item">
+        <div class="checkout-item-emoji">${esc(item.emoji)}</div>
+        <div class="checkout-item-info">
+          <div class="checkout-item-name">${esc(item.name)}</div>
+          <div class="checkout-item-qty">${Number(item.qty)}x</div>
+        </div>
+        <div class="checkout-item-price">${Number(item.price) * Number(item.qty)} GEL</div>
+      </div>
+    `).join('');
+    summaryEl.innerHTML = `
+      <div class="checkout-summary-row"><span>Subtotal</span><span>${total} GEL</span></div>
+      <div class="checkout-summary-row"><span>Delivery</span><span>Free</span></div>
+      <div class="checkout-summary-total"><span>Total</span><span>${total} GEL</span></div>
+    `;
+  }
+
+  // ──── Map (Leaflet lazy load) ────
+  // Custom gold pin icon for light map
+  function getGoldIcon() {
+    return L.divIcon({
+      className: 'sc-map-pin',
+      html: '<svg width="32" height="44" viewBox="0 0 32 44" fill="none" xmlns="http://www.w3.org/2000/svg">'
+        + '<path d="M16 0C7.16 0 0 7.16 0 16c0 12 16 28 16 28s16-16 16-28C32 7.16 24.84 0 16 0z" fill="#C9A84C"/>'
+        + '<circle cx="16" cy="16" r="7" fill="#fff"/>'
+        + '<circle cx="16" cy="16" r="3.5" fill="#C9A84C"/>'
+        + '</svg>',
+      iconSize: [32, 44],
+      iconAnchor: [16, 44],
+      popupAnchor: [0, -44]
+    });
+  }
+
+  function setDeliveryPin(lat, lng, flyTo) {
+    deliveryCoords = { lat, lng };
+    // Persist to checkout state
+    state.checkout = state.checkout || {};
+    state.checkout.coords = deliveryCoords;
+    saveState();
+    // Update marker
+    if (leafletMap) {
+      if (flyTo) leafletMap.flyTo([lat, lng], 16, { duration: 0.8 });
+      else leafletMap.setView([lat, lng], 16);
+      if (leafletMarker) leafletMarker.setLatLng([lat, lng]);
+      else leafletMarker = L.marker([lat, lng], { icon: getGoldIcon() }).addTo(leafletMap);
+    }
+    // Show status + coords
+    document.getElementById('mapPinStatus').classList.add('visible');
+    document.getElementById('mapCoords').textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    // Show Google Maps link
+    const gLink = document.getElementById('mapGoogleLink');
+    gLink.href = `https://www.google.com/maps?q=${lat},${lng}`;
+    gLink.classList.add('visible');
+  }
+
+  function initMap() {
+    if (leafletMap) {
+      setTimeout(() => leafletMap.invalidateSize(), 150);
+      // Restore persisted coords
+      if (state.checkout && state.checkout.coords && !deliveryCoords) {
+        const c = state.checkout.coords;
+        setDeliveryPin(c.lat, c.lng, false);
+      }
+      return;
+    }
+    if (leafletLoaded) return;
+    leafletLoaded = true;
+
+    const fallback = document.getElementById('mapFallback');
+
+    // Load CSS
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+
+    // Load JS
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+    script.crossOrigin = 'anonymous';
+    script.onload = () => {
+      try {
+        const container = document.getElementById('mapContainer');
+        fallback.style.display = 'none';
+        const mapDiv = document.createElement('div');
+        mapDiv.style.height = '100%';
+        mapDiv.style.width = '100%';
+        mapDiv.id = 'leafletMap';
+        container.appendChild(mapDiv);
+
+        // Start at saved coords or Batumi center
+        const startCoords = (state.checkout && state.checkout.coords)
+          ? [state.checkout.coords.lat, state.checkout.coords.lng]
+          : [41.6168, 41.6367];
+        const startZoom = (state.checkout && state.checkout.coords) ? 16 : 14;
+
+        leafletMap = L.map('leafletMap', {
+          attributionControl: true,
+          zoomControl: true,
+          tap: true
+        }).setView(startCoords, startZoom);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 20
+        }).addTo(leafletMap);
+
+        // Multiple invalidateSize calls to handle CSS transitions
+        setTimeout(() => leafletMap.invalidateSize(), 100);
+        setTimeout(() => leafletMap.invalidateSize(), 300);
+        setTimeout(() => leafletMap.invalidateSize(), 600);
+
+        // Restore saved pin
+        if (state.checkout && state.checkout.coords) {
+          const c = state.checkout.coords;
+          setDeliveryPin(c.lat, c.lng, false);
+        }
+
+        // Click to pin
+        leafletMap.on('click', (e) => {
+          setDeliveryPin(e.latlng.lat, e.latlng.lng, false);
+        });
+      } catch (err) {
+        console.error('Map init error:', err);
+        showMapFallback();
+      }
+    };
+    script.onerror = () => showMapFallback();
+    document.head.appendChild(script);
+  }
+
+  function showMapFallback() {
+    const fallback = document.getElementById('mapFallback');
+    fallback.style.display = '';
+    fallback.innerHTML = `<div class="map-fallback-icon">\uD83D\uDCCD</div><p style="font-size:var(--text-sm);">Map unavailable — please describe your delivery point below</p>`;
+    // Hide search bar gracefully
+    const searchRow = document.querySelector('.map-search-row');
+    if (searchRow) searchRow.style.display = 'none';
+  }
+
+  function useGeolocation() {
+    if (!navigator.geolocation) { toast('Geolocation not available', 'info'); return; }
+    const btn = document.getElementById('geolocBtn');
+    btn.textContent = 'Locating...';
+    btn.disabled = true;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        setDeliveryPin(latitude, longitude, true);
+        toast('Location found', 'success');
+        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg> Use my location';
+        btn.disabled = false;
+      },
+      (err) => {
+        toast('Could not get location — please pin manually', 'info');
+        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg> Use my location';
+        btn.disabled = false;
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  }
+
+  // ──── Nominatim Address Search ────
+  function searchAddress() {
+    const query = document.getElementById('mapSearchInput').value.trim();
+    if (!query) { toast('Enter an address to search', 'info'); return; }
+    const btn = document.getElementById('mapSearchBtn');
+    const resultEl = document.getElementById('mapSearchResult');
+    btn.textContent = '...';
+    btn.disabled = true;
+    resultEl.classList.remove('visible');
+
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', Batumi, Georgia')}&limit=1&addressdetails=1`;
+    fetch(url, { headers: { 'Accept-Language': 'en' } })
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          const place = data[0];
+          const lat = parseFloat(place.lat);
+          const lng = parseFloat(place.lon);
+          setDeliveryPin(lat, lng, true);
+          resultEl.textContent = place.display_name;
+          resultEl.classList.add('visible');
+          // Auto-fill address field
+          document.getElementById('deliveryAddress').value = place.display_name.split(',').slice(0, 3).join(',');
+          toast('Address found', 'success');
+        } else {
+          toast('Address not found — try a different query or pin manually', 'info');
+        }
+      })
+      .catch(() => {
+        toast('Search failed — check your internet connection', 'error');
+      })
+      .finally(() => {
+        btn.textContent = 'Find';
+        btn.disabled = false;
+      });
+  }
+
+  function placeOrder() {
+    const name = document.getElementById('contactName').value.trim().slice(0, 100);
+    const phone = document.getElementById('contactPhone').value.replace(/[^\d+\s()-]/g, '').trim();
+    if (!name || name.length < 2) { toast('Please enter your name', 'error'); return; }
+    if (!phone || phone.replace(/\D/g, '').length < 9) { toast('Please enter a valid phone number', 'error'); return; }
+
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const orderId = `SC-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}-${rand}`;
+
+    const order = {
+      id: orderId,
+      items: state.cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+      total: getCartTotal(),
+      status: 'processing',
+      date: now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      contact: { name, phone },
+      coords: deliveryCoords,
+      address: document.getElementById('deliveryAddress').value,
+      note: document.getElementById('deliveryNote').value,
+      payment: document.querySelector('input[name="payment"]:checked').value
+    };
+
+    state.orders.unshift(order);
+    state.cart = [];
+    state.checkout = {};  // Clear persisted checkout data
+    deliveryCoords = null;
+    saveState();
+    updateCartBadge();
+
+    document.getElementById('orderNumber').textContent = orderId;
+    const waMsg = encodeURIComponent(`Hi Sushi Clan! My order number is ${orderId}. I'd like to ask about my order.`);
+    document.getElementById('waOrderLink').href = `https://wa.me/+995555162751?text=${waMsg}`;
+
+    showStep(4);
+    toast('Order placed!', 'success');
+  }
+
+  // ──── Blog Articles ────
+  const articles = [
+    {
+      emoji: '\uD83D\uDC20',
+      tag: 'Ingredients',
+      title: 'What Makes Salmon "Sashimi-Grade"?',
+      meta: 'Sushi Clan Journal · 5 min read',
+      content: [
+        'The term "sashimi-grade" has no legal definition, which might surprise you. It is not a government standard or an inspection rating — it is a promise from a supplier to a chef that the fish has been handled with the care required for raw consumption. At Sushi Clan, that promise is something we take very seriously.',
+        'Our Norwegian salmon is farmed in the cold, clear waters of the fjords, where low temperatures and strong currents produce fish with firm flesh and high fat content. After harvesting, the salmon is flash-frozen at -35\u00B0C within hours — a process that eliminates parasites while preserving the cellular structure of the meat. This is the critical step that separates sashimi-quality from everything else.',
+        'When the fish arrives in Batumi, it enters our cold chain and never leaves it until the moment of preparation. We receive shipments twice weekly, and each fillet is inspected for color, texture, and aroma before it earns a place on our cutting board. Fish that does not meet our standard is returned — no exceptions.',
+        'The result is salmon that tastes clean, buttery, and bright. You will notice the difference in the first bite: no fishiness, no graininess, just pure, honest flavor. That is what sashimi-grade means to us.'
+      ]
+    },
+    {
+      emoji: '\uD83C\uDF5A',
+      tag: 'Technique',
+      title: 'The Rice Makes the Sushi',
+      meta: 'Sushi Clan Journal · 4 min read',
+      content: [
+        'Ask any itamae — any trained sushi chef — what matters most, and they will not say the fish. They will say the rice. Shari, as seasoned sushi rice is called in Japanese, is the foundation of every piece we serve, and getting it right is a discipline that takes years to master.',
+        'We use Japonica short-grain rice, prized for its sticky texture and subtle sweetness. Each batch is washed by hand until the water runs clear — typically seven to eight rinses — to remove excess starch that would make the grains gummy. The rice is then soaked for exactly 30 minutes before cooking, allowing the grains to absorb water evenly.',
+        'After cooking, the rice is transferred to a wooden hangiri (a wide, flat-bottomed tub) and seasoned with our house blend of rice vinegar, sugar, and salt while being fanned to cool it rapidly. This step is crucial: the fanning creates a glossy sheen on each grain and brings the temperature down to body heat — the ideal temperature for shaping.',
+        'When you bite into one of our rolls or nigiri, the rice should release gently, each grain distinct yet cohesive. Too hot and it becomes mushy; too cold and it hardens. This narrow window is why we prepare rice in small batches throughout service, never in advance. It is more work, but you can taste the difference.'
+      ]
+    },
+    {
+      emoji: '\u2744\uFE0F',
+      tag: 'Operations',
+      title: 'How We Keep Delivery Fresh in Batumi',
+      meta: 'Sushi Clan Journal · 3 min read',
+      content: [
+        'Sushi is a race against time. From the moment rice meets fish, quality begins to decline — slowly at first, then rapidly. Our entire delivery operation is designed around one principle: minimize the time between preparation and consumption.',
+        'Every set is prepared to order. We do not pre-make rolls and wait for customers. When your order comes in, your specific set enters the queue, and the clock starts. Our target is to have your set assembled, plated, sauced, and packaged within 20 minutes of receiving the order.',
+        'Packaging plays a critical role. Our boxes are insulated and designed to maintain temperature separation — cold items stay cool, warm items (like our torched preparations) retain their heat. The presentation insert is not just aesthetic; it creates compartments that prevent items from shifting during transport.',
+        'Our delivery radius covers all of Batumi, and we commit to a 60-minute maximum from order to doorstep. In practice, most deliveries arrive within 35-45 minutes. We track every delivery and if conditions compromise quality — extreme heat, unexpected delays — we will contact you and offer solutions rather than deliver a substandard product.'
+      ]
+    }
+  ];
+
+  function openArticle(index) {
+    const article = articles[index];
+    if (!article) return;
+    document.getElementById('articleEmoji').textContent = article.emoji;
+    document.getElementById('articleTag').textContent = article.tag;
+    document.getElementById('articleTitle').textContent = article.title;
+    document.getElementById('articleMeta').textContent = article.meta;
+    document.getElementById('articleContent').innerHTML = article.content.map(p => `<p>${esc(p)}</p>`).join('');
+    document.getElementById('articleOverlay').classList.add('active');
+    lockScroll();
+    openerEl = document.activeElement;
+    document.getElementById('articleClose').focus();
+  }
+
+  function closeArticle() {
+    document.getElementById('articleOverlay').classList.remove('active');
+    unlockScroll();
+    if (openerEl) openerEl.focus();
+  }
+
+  // ──── Reviews ────
+  let reviewStars = 0;
+
+  function toggleReviewForm() {
+    if (!state.isLoggedIn) {
+      toast('Please sign in to leave a review', 'info');
+      openAuth();
+      return;
+    }
+    const form = document.getElementById('reviewFormContainer');
+    form.classList.toggle('active');
+    if (form.classList.contains('active')) {
+      document.getElementById('reviewText').focus();
+    }
+  }
+
+  function setStars(n) {
+    reviewStars = n;
+    document.querySelectorAll('#starPicker button').forEach((btn, i) => {
+      btn.classList.toggle('active', i < n);
+    });
+  }
+
+  function submitReview() {
+    const text = document.getElementById('reviewText').value.trim().slice(0, 500);
+    if (!text || reviewStars === 0) {
+      toast('Please add a rating and review', 'error');
+      return;
+    }
+    const review = {
+      name: state.user.name,
+      initial: state.user.initial,
+      text,
+      stars: reviewStars,
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+    };
+    state.reviews.push(review);
+    saveState();
+
+    // Prepend to DOM
+    const list = document.getElementById('reviewsList');
+    const card = document.createElement('div');
+    card.className = 'review-card';
+    card.innerHTML = `
+      <div class="review-stars">${'\u2605 '.repeat(Math.min(Math.max(Number(review.stars)||0, 0), 5)).trim()}</div>
+      <p class="review-text">"${esc(review.text)}"</p>
+      <div class="review-author">
+        <div class="review-avatar">${esc(review.initial)}</div>
+        <div class="review-author-info">
+          <strong>${esc(review.name)}</strong>
+          <span>${esc(review.date)}</span>
+        </div>
+      </div>
+    `;
+    list.insertBefore(card, list.firstChild);
+
+    // Reset form
+    document.getElementById('reviewText').value = '';
+    reviewStars = 0;
+    document.querySelectorAll('#starPicker button').forEach(b => b.classList.remove('active'));
+    document.getElementById('reviewFormContainer').classList.remove('active');
+    toast('Review submitted — thank you!', 'success');
+  }
+
+  function restoreUserReviews() {
+    if (state.reviews.length === 0) return;
+    const list = document.getElementById('reviewsList');
+    state.reviews.forEach(review => {
+      const card = document.createElement('div');
+      card.className = 'review-card';
+      card.innerHTML = `
+        <div class="review-stars">${'\u2605 '.repeat(Math.min(Math.max(Number(review.stars)||0, 0), 5)).trim()}</div>
+        <p class="review-text">"${esc(review.text)}"</p>
+        <div class="review-author">
+          <div class="review-avatar">${esc(review.initial)}</div>
+          <div class="review-author-info">
+            <strong>${esc(review.name)}</strong>
+            <span>${esc(review.date)}</span>
+          </div>
+        </div>
+      `;
+      list.insertBefore(card, list.firstChild);
+    });
+  }
+
+  // ──── Init ────
+  function init() {
+    loadState();
+    updateCartBadge();
+    updateNavProfile();
+    restoreUserReviews();
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // Hamburger
+    document.getElementById('hamburger').addEventListener('click', toggleMobileMenu);
+
+    // Cart
+    document.getElementById('navCart').addEventListener('click', openCart);
+    document.getElementById('cartClose').addEventListener('click', closeCart);
+    document.getElementById('cartOverlay').addEventListener('click', closeCart);
+    document.getElementById('cartCheckoutBtn').addEventListener('click', openCheckout);
+
+    // Menu tier tabs
+    document.querySelectorAll('.menu-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const tier = tab.dataset.tab;
+        document.querySelectorAll('.menu-tier-group').forEach(g => {
+          g.style.display = (tier === 'all' || g.dataset.tier === tier) ? '' : 'none';
+        });
+      });
+    });
+
+    // Menu item → open detail overlay
+    document.querySelectorAll('.menu-item[data-detail]').forEach(item => {
+      item.addEventListener('click', () => openItemDetail(item.dataset.detail));
+    });
+
+    // Detail overlay close buttons
+    document.querySelectorAll('.item-detail-back[data-close]').forEach(btn => {
+      btn.addEventListener('click', (e) => { e.stopPropagation(); closeItemDetail(btn.dataset.close); });
+    });
+
+    // Detail overlay add-to-cart buttons
+    document.querySelectorAll('.item-detail-order-btn[data-item-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        addToCart(btn.dataset.itemId, btn.dataset.itemName, btn.dataset.itemPrice, btn.dataset.itemEmoji);
+        closeItemDetail(btn.closest('.item-detail-overlay').id.replace('detail-', ''));
+      });
+    });
+
+    // Detail overlay swipe-right to close
+    document.querySelectorAll('.item-detail-overlay').forEach(overlay => {
+      let startX = 0;
+      overlay.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      overlay.addEventListener('touchend', e => {
+        if (e.changedTouches[0].clientX - startX > 60) {
+          closeItemDetail(overlay.id.replace('detail-', ''));
+        }
+      }, { passive: true });
+    });
+
+    // Auth
+    document.getElementById('navProfile').addEventListener('click', () => {
+      if (state.isLoggedIn) openProfile(); else openAuth();
+    });
+    document.getElementById('authClose').addEventListener('click', closeAuth);
+    document.getElementById('authModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('authModal')) closeAuth();
+    });
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchAuthTab(tab.dataset.authTab));
+    });
+    document.getElementById('googleLoginBtn').addEventListener('click', googleLogin);
+    document.getElementById('signinSendBtn').addEventListener('click', () => {
+      startOtp(document.getElementById('signinPhone').value.trim(), 'Guest');
+    });
+    document.getElementById('signupSendBtn').addEventListener('click', () => {
+      startOtp(document.getElementById('signupPhone').value.trim(), document.getElementById('signupName').value.trim());
+    });
+    document.getElementById('otpVerifyBtn').addEventListener('click', verifyOtp);
+
+    // OTP auto-advance
+    document.querySelectorAll('.otp-input').forEach((input, idx, arr) => {
+      input.addEventListener('input', () => {
+        if (input.value && idx < arr.length - 1) arr[idx + 1].focus();
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && idx > 0) arr[idx - 1].focus();
+      });
+    });
+
+    // Profile
+    document.getElementById('profileClose').addEventListener('click', closeProfile);
+    document.getElementById('profileOverlay').addEventListener('click', closeProfile);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
+    // Checkout
+    document.getElementById('checkoutClose').addEventListener('click', closeCheckout);
+    document.getElementById('checkoutBack').addEventListener('click', prevStep);
+    document.getElementById('checkoutNext1').addEventListener('click', () => showStep(2));
+    document.getElementById('checkoutNext2').addEventListener('click', () => showStep(3));
+    document.getElementById('checkoutNext3').addEventListener('click', placeOrder);
+    document.getElementById('geolocBtn').addEventListener('click', useGeolocation);
+    document.getElementById('mapSearchBtn').addEventListener('click', () => searchAddress());
+    document.getElementById('mapSearchInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); searchAddress(); }
+    });
+
+    // Persist address field to checkout state on change
+    document.getElementById('deliveryAddress').addEventListener('input', (e) => {
+      state.checkout = state.checkout || {};
+      state.checkout.address = e.target.value;
+      saveState();
+    });
+
+    // Payment method selection
+    document.querySelectorAll('.payment-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        opt.querySelector('input').checked = true;
+      });
+    });
+
+    // Blog
+    document.querySelectorAll('.blog-card').forEach(card => {
+      const handler = () => openArticle(Number(card.dataset.article));
+      card.addEventListener('click', handler);
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handler(); } });
+    });
+    document.getElementById('articleClose').addEventListener('click', closeArticle);
+
+    // Reviews
+    document.getElementById('writeReviewBtn').addEventListener('click', toggleReviewForm);
+    document.getElementById('submitReviewBtn').addEventListener('click', submitReview);
+    document.querySelectorAll('#starPicker button').forEach(btn => {
+      btn.addEventListener('click', () => setStars(Number(btn.dataset.star)));
+    });
+
+    // Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (document.getElementById('articleOverlay').classList.contains('active')) { closeArticle(); return; }
+      if (document.getElementById('checkoutOverlay').classList.contains('active')) { closeCheckout(); return; }
+      if (document.getElementById('authModal').classList.contains('active')) { closeAuth(); return; }
+      if (document.getElementById('profilePanel').classList.contains('active')) { closeProfile(); return; }
+      if (document.getElementById('cartDrawer').classList.contains('active')) { closeCart(); return; }
+    });
+
+    // Reveal on scroll (IntersectionObserver)
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
+  }
+
+  // Boot
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Public API
+  return {
+    toggleMobileMenu,
+    openCart, closeCart,
+    updateQty, removeFromCart,
+    closeCheckout,
+    resendOtp,
+    openItemDetail, closeItemDetail
+  };
+})();
+</script>
+</body>
+</html>

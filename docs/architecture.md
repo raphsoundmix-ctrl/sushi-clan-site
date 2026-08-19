@@ -1,33 +1,33 @@
-# Архитектура
+# Architecture
 
-Как устроена страница внутри: карта файла, состояние, путь заказа, карта доставки, доступность, безопасность и приёмы производительности. Плюс инструкция, как менять контент, если под рукой нет разработчика.
+How the page works inside: the file map, state, the order path, the delivery map, accessibility, security and the performance techniques. Plus instructions for changing content when no developer is around.
 
-[← назад к обзору](../README.md)
+[← back to the overview](../README.md)
 
 ---
 
-## Карта файла
+## File map
 
-Весь сайт — `index.html`, 4421 строка. Границы блоков:
+The whole site is `index.html`, 4421 lines. The boundaries:
 
-| Строки | Что там |
+| Lines | What is there |
 |---|---|
-| 1–18 | `head`: мета, `theme-color`, `referrer`, `nosniff`, подключение шрифта, `preload` логотипа |
-| 19–2373 | `<style>` целиком |
-| 20–64 | дизайн-токены в `:root`: палитра, типографская шкала, отступы, радиусы, кривые |
-| 66–197 | ресет, база, `prefers-reduced-motion`, `safe-area`, анимации |
-| 199–1351 | компоненты страницы: навигация, первый экран, меню, философия, журнал, отзывы, FAQ, футер |
-| 1407–2373 | наложения: тосты, корзина, авторизация, оформление, профиль, статья |
-| 2375–3412 | разметка |
-| 3413–4419 | `<script>`: модуль `App` |
+| 1–18 | `head`: meta, `theme-color`, `referrer`, `nosniff`, the font link, the logo `preload` |
+| 19–2373 | the entire `<style>` |
+| 20–64 | design tokens in `:root`: palette, type scale, spacing, radii, easing |
+| 66–197 | reset, base, `prefers-reduced-motion`, `safe-area`, animations |
+| 199–1351 | page components: navigation, hero, menu, philosophy, journal, reviews, FAQ, footer |
+| 1407–2373 | layers: toasts, cart, auth, checkout, profile, article |
+| 2375–3412 | markup |
+| 3413–4419 | `<script>`: the `App` module |
 
-CSS секционирован комментариями-разделителями — по ним удобно прыгать поиском. Порядок в файле повторяет порядок на экране, кроме наложений: они собраны в конце, потому что живут поверх всего.
+The CSS is sectioned with divider comments, which makes jumping around by search easy. The order in the file mirrors the order on screen, except for the layers: they sit at the end because they live on top of everything.
 
 ---
 
-## Модуль App
+## The App module
 
-Вся логика — одна IIFE со `'use strict'`. Наружу торчит десяток методов, всё остальное закрыто замыканием.
+All the logic is one IIFE with `'use strict'`. About ten methods are exposed; everything else stays inside the closure.
 
 ```js
 const App = (() => {
@@ -39,70 +39,70 @@ const App = (() => {
 })();
 ```
 
-Наружу вынесено то, что вызывается из атрибутов `onclick` в динамически собираемой разметке: кнопки количества в корзине, закрытие оверлеев, повтор OTP. Всё остальное живёт на `addEventListener` внутри `init()` — навигация, вкладки меню, шаги оформления, звёзды рейтинга, клавиша Escape.
+What is exposed is what gets called from `onclick` attributes in dynamically built markup: the quantity buttons in the cart, overlay closing, the OTP resend. Everything else lives on `addEventListener` inside `init()` — navigation, menu tabs, checkout steps, rating stars, the Escape key.
 
-### Состояние и его сохранение
+### State and how it persists
 
-Единственный источник правды — объект `state`. После каждой мутации он целиком уходит в `localStorage`:
+The single source of truth is the `state` object. After every mutation it goes into `localStorage` whole:
 
 ```js
 function saveState() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-  catch (e) { /* приватный режим Safari — работаем в памяти */ }
+  catch (e) { /* Safari private mode — keep working in memory */ }
 }
 ```
 
-Чтение при старте так же обёрнуто в `try/catch` и мержится поверх дефолтов через спред, поэтому старая сохранённая структура без новых полей не ломает приложение.
+Reading at startup is wrapped the same way and merged over the defaults with a spread, so an older saved shape without newer fields does not break the app.
 
-Что лежит в `state`:
+What lives in `state`:
 
-| Ключ | Содержимое | Когда пишется |
+| Key | Contents | Written when |
 |---|---|---|
-| `cart` | позиции с `id`, `name`, `price`, `qty`, `emoji` | при добавлении и изменении количества |
-| `orders` | оформленные заказы с составом, контактами, координатами | при `placeOrder()` |
-| `reviews` | отзывы, которые оставил этот браузер | при отправке формы |
-| `user` | имя, телефон, инициал, месяц регистрации | после демо-входа |
-| `checkout` | черновик: адрес и координаты | пока гость заполняет шаг 2 |
+| `cart` | items with `id`, `name`, `price`, `qty`, `emoji` | on add and on quantity change |
+| `orders` | placed orders with items, contacts, coordinates | in `placeOrder()` |
+| `reviews` | reviews left from this browser | on form submit |
+| `user` | name, phone, initial, sign-up month | after the demo login |
+| `checkout` | draft: address and coordinates | while the guest fills in step 2 |
 
-Черновик оформления сохраняется отдельно и восстанавливается при повторном открытии: если гость свернул браузер на середине, точка на карте и адрес возвращаются на место.
+The checkout draft is stored separately and restored when the guest comes back: if they minimised the browser halfway through, the map pin and the address return to where they were.
 
 ---
 
-## Путь заказа
+## The order path
 
 ```mermaid
 sequenceDiagram
-    participant Г as Гость
-    participant S as App (браузер)
+    participant G as Guest
+    participant S as App (browser)
     participant LS as localStorage
     participant L as Leaflet + CARTO
     participant N as Nominatim
     participant W as WhatsApp
 
-    Г->>S: открывает карточку позиции
-    Г->>S: «Add to Order»
-    S->>LS: saveState() — корзина
-    Г->>S: «Proceed to Checkout»
-    S->>S: шаг 1, пересчёт суммы
-    Г->>S: шаг 2
-    S->>L: initMap() — вставка script и link с SRI
-    alt CDN отвечает
-        L-->>S: карта, клик ставит пин
-        Г->>N: поиск адреса (кнопка Find)
-        N-->>S: координаты и строка адреса
-    else CDN недоступен
-        S-->>Г: фолбэк, адрес текстом
+    G->>S: opens an item card
+    G->>S: "Add to Order"
+    S->>LS: saveState() — cart
+    G->>S: "Proceed to Checkout"
+    S->>S: step 1, total recalculated
+    G->>S: step 2
+    S->>L: initMap() — injects script and link with SRI
+    alt CDN responds
+        L-->>S: map, a click drops the pin
+        G->>N: address search (Find button)
+        N-->>S: coordinates and address string
+    else CDN unreachable
+        S-->>G: fallback, address as text
     end
-    S->>LS: черновик адреса и координат
-    Г->>S: шаг 3, имя, телефон, оплата
-    S->>S: placeOrder() — валидация, номер заказа
-    S->>LS: заказ в историю, корзина очищена
-    S-->>Г: шаг 4, подтверждение
-    Г->>W: кнопка «Ask about your order»
-    W-->>Г: чат с готовым текстом заказа
+    S->>LS: draft address and coordinates
+    G->>S: step 3, name, phone, payment
+    S->>S: placeOrder() — validation, order id
+    S->>LS: order into history, cart cleared
+    S-->>G: step 4, confirmation
+    G->>W: "Ask about your order" button
+    W-->>G: chat with the order text prefilled
 ```
 
-### Номер заказа
+### The order id
 
 ```js
 const orderId = `SC-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}`
@@ -110,91 +110,91 @@ const orderId = `SC-${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDat
 // SC-20260819-1927-UNDC
 ```
 
-Дата и время читаются человеком и сортируются лексикографически. Четыре символа из `Math.random().toString(36)` разводят заказы, оформленные в одну минуту. Для пяти сетов в день коллизий не бывает; когда номера начнёт выдавать сервер, формат останется тем же, а хвост станет последовательным.
+Date and time are readable by a person and sort lexicographically. Four characters from `Math.random().toString(36)` separate orders placed within the same minute. At five sets a day collisions do not happen; when a server starts issuing ids the format stays and the tail becomes sequential.
 
-### Что валидируется
+### What gets validated
 
-Перед оформлением проверяются имя (минимум два символа) и телефон (минимум девять цифр после очистки от всего, кроме цифр, плюса, скобок, пробелов и дефисов). Имя обрезается сотней символов, текст отзыва пятьюстами. Всё остальное необязательно и уезжает как есть.
+Before placing an order, the name (at least two characters) and the phone (at least nine digits after stripping everything but digits, plus, brackets, spaces and dashes) are checked. The name is truncated at 100 characters, review text at 500. Everything else is optional and travels as typed.
 
-### Сообщение на кухню
+### The message to the kitchen
 
-Текст собирается из состава, суммы, способа оплаты, контактов, адреса, координат и комментария, кодируется `encodeURIComponent` и подставляется в `https://wa.me/<номер>?text=...`. Пустые поля не попадают в сообщение: если координат нет, строки с картой просто не будет.
-
----
-
-## Карта доставки
-
-Три независимых способа поставить точку, потому что каждый по отдельности иногда не срабатывает:
-
-1. Тап по карте — `leafletMap.on('click')` ставит золотой `L.divIcon` с SVG внутри.
-2. Кнопка «Use my location» — `navigator.geolocation` с `enableHighAccuracy`, таймаутом 10 секунд и кешем в минуту. Отказ в разрешении не ломает шаг, показывается тост «pin manually».
-3. Поиск адреса — Nominatim с принудительным `, Batumi, Georgia` в запросе, ответ ограничен одной записью, найденная строка подставляется в поле адреса.
-
-Любая из трёх дорог заканчивается в `setDeliveryPin(lat, lng)`, которая обновляет маркер, сохраняет координаты в черновик, показывает координаты с точностью до пяти знаков и раскрывает ссылку «Open in Google Maps».
-
-Тайлы CARTO Voyager выбраны светлыми осознанно: сайт тёмный, и светлая карта в нём читается как отдельный рабочий инструмент, а золотой пин на ней видно сразу.
+The text is assembled from items, total, payment method, contacts, address, coordinates and the note, encoded with `encodeURIComponent` and dropped into `https://wa.me/<number>?text=...`. Empty fields never make it into the message: with no coordinates, the map line simply is not there.
 
 ---
 
-## Доступность
+## The delivery map
 
-Что сделано:
+Three independent ways to drop a pin, because each one occasionally fails on its own:
 
-- Клавиша Escape закрывает верхний открытый слой в порядке приоритета: статья, оформление, авторизация, профиль, корзина.
-- Фокус при открытии диалога переводится на первый интерактивный элемент, при закрытии возвращается на кнопку, которая его открыла.
-- Диалоги размечены `role="dialog"` и `aria-modal="true"`, у контейнера тостов `aria-live="polite"`.
-- У всех иконочных кнопок есть `aria-label`, декоративные SVG помечены `aria-hidden`.
-- Карточки журнала доступны с клавиатуры: `tabindex="0"`, `role="button"` и обработчик Enter и пробела.
-- FAQ собран на нативных `<details>`, то есть работает и без JavaScript.
-- `prefers-reduced-motion: reduce` гасит анимации и плавный скролл.
-- Блокировка скролла фона сохраняет позицию и возвращает её при закрытии, иначе iOS выбрасывает страницу наверх.
+1. Tapping the map — `leafletMap.on('click')` places a gold `L.divIcon` with inline SVG.
+2. The "Use my location" button — `navigator.geolocation` with `enableHighAccuracy`, a 10 second timeout and a one minute cache. A denied permission does not break the step; a toast suggests pinning manually.
+3. Address search — Nominatim with a forced `, Batumi, Georgia` in the query, capped at one result, and the found string filled into the address field.
 
-Чего не сделано: полноценного focus trap. Табуляция из открытого диалога уходит на фон. Это записано в долги в [README](../README.md#что-здесь-честно-не-работает).
+All three roads end in `setDeliveryPin(lat, lng)`, which updates the marker, saves the coordinates into the draft, shows them to five decimal places and reveals the "Open in Google Maps" link.
+
+CARTO Voyager tiles are light on purpose: the site is dark, and a light map inside it reads as a separate working tool, with the gold pin instantly visible on it.
 
 ---
 
-## Безопасность
+## Accessibility
 
-- Всё, что попадает в `innerHTML`, проходит через `esc()`: замена `& < > " '` на сущности. Числа дополнительно прогоняются через `Number()`, рейтинг зажимается в 0–5.
-- Leaflet подключается с `integrity` и `crossorigin`: подменённый файл браузер не выполнит.
-- В `head` заданы `referrer: strict-origin-when-cross-origin` и `X-Content-Type-Options: nosniff`.
-- Внешние ссылки, открывающиеся в новой вкладке, идут с `rel="noopener noreferrer"`.
-- Ввод чистится перед использованием: телефон от лишних символов, имя и отзыв по длине.
+What is in place:
 
-Чего здесь нет и быть не может без сервера: проверки цены, лимита заказов, защиты от накрутки отзывов. Всё это переезжает во вторую фазу.
+- Escape closes the topmost open layer in priority order: article, checkout, auth, profile, cart.
+- Focus moves to the first interactive element when a dialog opens and returns to the button that opened it on close.
+- Dialogs carry `role="dialog"` and `aria-modal="true"`; the toast container has `aria-live="polite"`.
+- Every icon button has an `aria-label`, decorative SVG is marked `aria-hidden`.
+- Journal cards work from the keyboard: `tabindex="0"`, `role="button"` and a handler for Enter and Space.
+- The FAQ is built on native `<details>`, so it works with JavaScript disabled.
+- `prefers-reduced-motion: reduce` kills animations and smooth scrolling.
+- The background scroll lock saves the position and restores it on close, otherwise iOS throws the page to the top.
+
+What is missing: a real focus trap. Tab walks out of an open dialog into the background. It is written down in the debt list in the [README](../README.md#what-honestly-does-not-work).
 
 ---
 
-## Производительность
+## Security
 
-| Приём | Где |
+- Everything that reaches `innerHTML` goes through `esc()`: `& < > " '` become entities. Numbers additionally pass through `Number()`, the rating is clamped to 0–5.
+- Leaflet loads with `integrity` and `crossorigin`: a swapped file will not execute.
+- `head` sets `referrer: strict-origin-when-cross-origin` and `X-Content-Type-Options: nosniff`.
+- External links that open in a new tab carry `rel="noopener noreferrer"`.
+- Input is cleaned before use: the phone from stray characters, the name and the review by length.
+
+What is not here and cannot be without a server: price validation, an order limit, protection against review stuffing. All of it moves into phase two.
+
+---
+
+## Performance
+
+| Technique | Where |
 |---|---|
-| `content-visibility: auto` | тяжёлые секции ниже первого экрана |
-| `IntersectionObserver` с `unobserve` после срабатывания | появление блоков при скролле |
-| Пассивный слушатель скролла | смена фона навигации |
-| Ленивая загрузка Leaflet | только при первом входе на шаг 2 |
-| `clamp()` вместо брейкпоинтов | вся типографская шкала |
-| WebP через `<picture>` плюс `width`/`height` | логотип |
-| `fetchpriority="high"` и `preload` | логотип первого экрана, он же LCP |
+| `content-visibility: auto` | heavy sections below the fold |
+| `IntersectionObserver` with `unobserve` after the first hit | reveal on scroll |
+| Passive scroll listener | navigation background change |
+| Lazy Leaflet loading | only on the first entry into step 2 |
+| `clamp()` instead of breakpoints | the whole type scale |
+| WebP through `<picture>` plus `width`/`height` | the logo |
+| `fetchpriority="high"` and `preload` | the hero logo, which is the LCP element |
 
-Цифры и метод замера — в [performance.md](performance.md).
-
----
-
-## Как поменять контент
-
-Всё правится в `index.html`, разработчик для этого не нужен.
-
-**Цена или состав позиции.** Ищите название блюда. Оно встречается дважды: в строке меню (блок `.menu-item`) и в детальном оверлее (`#detail-<id>`). Цена лежит в трёх местах: `.menu-item-price`, `.item-detail-price-val` и атрибут `data-item-price` на кнопке заказа. Атрибут важнее всего — именно из него цена попадает в корзину.
-
-**Новая позиция.** Скопируйте блок `.menu-item` внутрь нужного тира и блок `#detail-<id>` в раздел оверлеев. Свяжите их атрибутом `data-detail`. На кнопке заказа заполните `data-item-id`, `data-item-name`, `data-item-price`, `data-item-emoji`. Обработчики навешиваются автоматически при загрузке, руками ничего дописывать не надо.
-
-**Статья в журнале.** Текст статей лежит в массиве `articles` в скрипте. Добавьте объект с полями `emoji`, `tag`, `title`, `meta`, `content` (массив абзацев) и карточку `.blog-card` с `data-article`, равным индексу в массиве.
-
-**Номер WhatsApp.** Встречается пять раз: первый экран, финальный блок, футер, плавающая кнопка и сборка сообщения в `placeOrder()`. Меняйте поиском по номеру, чтобы не пропустить ни одного.
-
-После правок прогоните `python3 tools/check.py` — он поймает битые ссылки на файлы, пропавшие мета-теги и превышение бюджета веса.
+Numbers and the measurement method are in [performance.md](performance.md).
 
 ---
 
-[← назад к обзору](../README.md) · [решения](decisions.md) · [замеры](performance.md) · [роадмап](roadmap.md)
+## Changing the content
+
+Everything is edited in `index.html`; no developer needed.
+
+**A price or the contents of an item.** Search for the dish name. It appears twice: in the menu row (`.menu-item`) and in the detail overlay (`#detail-<id>`). The price sits in three places: `.menu-item-price`, `.item-detail-price-val` and the `data-item-price` attribute on the order button. The attribute matters most — that is where the cart takes the price from.
+
+**A new item.** Copy the `.menu-item` block into the right tier and the `#detail-<id>` block into the overlay section. Link them with the `data-detail` attribute. On the order button fill in `data-item-id`, `data-item-name`, `data-item-price`, `data-item-emoji`. Handlers are attached automatically on load, nothing has to be wired by hand.
+
+**A journal article.** Article text lives in the `articles` array in the script. Add an object with `emoji`, `tag`, `title`, `meta` and `content` (an array of paragraphs), plus a `.blog-card` whose `data-article` equals the index in the array.
+
+**The WhatsApp number.** It appears five times: the hero, the final block, the footer, the floating button and the message assembly in `placeOrder()`. Replace it by searching for the number so none is missed.
+
+After editing, run `python3 tools/check.py` — it catches broken file references, missing meta tags and anything over the weight budget.
+
+---
+
+[← back to the overview](../README.md) · [decisions](decisions.md) · [measurements](performance.md) · [roadmap](roadmap.md)

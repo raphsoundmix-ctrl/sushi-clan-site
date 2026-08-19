@@ -1,187 +1,187 @@
-# Журнал решений
+# Decision log
 
-Пятнадцать решений, из которых собран этот сайт. Для каждого: что было на входе, что я выбрал, что рассматривал ещё и чем за выбор плачу. Порядок примерно тот, в котором решения принимались.
+Fifteen decisions this site is built from. For each one: what came in, what I picked, what else I weighed, and what the choice costs. Roughly in the order they were made.
 
-[← назад к обзору](../README.md)
-
----
-
-## 1. Один HTML-файл вместо фреймворка
-
-Сайт живёт на шаред-хостинге под IIS, обновляет его владелец кухни, а не разработчик. Любая сборка означает: поставь Node, накати зависимости, собери, залей `dist`. Через полгода `npm install` упадёт на очередном мажоре, и сайт застынет.
-
-Поэтому весь проект — это `index.html`: дизайн-токены, разметка и логика в одном файле. Правка цены в меню занимает минуту и не требует ничего, кроме текстового редактора.
-
-Что рассматривал: Astro (собирает статику, но всё равно сборка), Next.js (нужен рантайм, оверкилл для одной страницы), конструктор вроде Tilda (месячная подписка и потолок по кастомности; премиум-дизайн там не собрать).
-
-Цена: 4421 строка в одном файле. Пока это работает — секции размечены комментариями-разделителями, поиск по имени функции находит всё за секунду. Когда появится вторая страница, файл придётся резать. Тогда же станет уместна и сборка.
+[← back to the overview](../README.md)
 
 ---
 
-## 2. WhatsApp как транспорт заказа
+## 1. One HTML file instead of a framework
 
-Обычная развилка для такого проекта: форма на почту, форма в Telegram-бота или интеграция с CRM. Все три требуют либо сервера, либо чужого сервиса-посредника.
+The site lives on shared hosting under IIS, and the person who updates it is the kitchen owner, not a developer. Any build step means: install Node, pull dependencies, build, upload `dist`. Six months later `npm install` breaks on some major version bump and the site freezes.
 
-Кухня уже сидит в WhatsApp: там переписка с гостями, там же вопросы по адресам. Значит, заказ должен приезжать туда, а не в новый инструмент, который никто не станет открывать в разгар смены.
+So the whole project is `index.html`: design tokens, markup and logic in one place. Changing a price in the menu takes a minute and needs nothing but a text editor.
 
-Реализация — deep link `wa.me` с готовым текстом. Сайт собирает сообщение из корзины, контактов, адреса и координат, кодирует его и подставляет в ссылку. Гость жмёт кнопку, у него открывается WhatsApp с уже набранным текстом, остаётся отправить.
+What I considered: Astro (produces static output, but it is still a build), Next.js (needs a runtime, overkill for a single page), a builder like Tilda (monthly subscription and a ceiling on customisation; this kind of premium design does not come out of it).
 
-Цена самая серьёзная в проекте: если гость закрыл вкладку до нажатия кнопки, на кухне заказа нет. Экран подтверждения выглядит убедительно, но по факту это чек для гостя. Дырку закрывает только сервер, см. [роадмап](roadmap.md).
-
----
-
-## 3. `localStorage` вместо базы
-
-Корзина должна переживать перезагрузку страницы, иначе гость, случайно вышедший из вкладки, начинает выбор заново.
-
-Всё состояние — один объект `state` (пользователь, корзина, заказы, отзывы, черновик оформления), который целиком сериализуется в `localStorage` под ключом `sushi_clan_state` после каждой мутации. Чтение и запись обёрнуты в `try/catch`: в приватном режиме Safari `localStorage` бросает исключение, и приложение молча продолжает работать в памяти.
-
-Цена: состояние привязано к браузеру. Переход телефон → ноутбук обнуляет корзину, история заказов не синхронизируется, отзыв виден только автору. Для пяти сетов в день это терпимо, для сети кофеен уже нет.
+The cost: 4421 lines in one file. It works for now — sections are marked with divider comments and searching for a function name finds it in a second. Once there is a second page, the file has to be split. That is also the moment a build starts making sense.
 
 ---
 
-## 4. Авторизация как демо, честно подписанная
+## 2. WhatsApp as the order transport
 
-Профиль с историей заказов нужен был для демонстрации механики: как заказы копятся, как выглядит карточка гостя. Настоящий вход требует сервера, SMS-провайдера и денег за каждое сообщение.
+The usual fork for a project like this: a form that sends email, a form that posts into a Telegram bot, or a CRM integration. All three need either a server or a third-party service in the middle.
 
-Я оставил механику и убрал всякую иллюзию безопасности. OTP принимает любые четыре цифры, кнопка Google логинит демо-пользователя. Слово Demo стоит в интерфейсе трижды: в подзаголовке модалки, на кнопке и под полем ввода.
+The kitchen already sits in WhatsApp. That is where the conversations with guests happen and where address questions land. So the order has to arrive there, not in a new tool nobody will open in the middle of a shift.
 
-Альтернатива, которую отверг: спрятать раздел до появления бэкенда. Тогда владелец не увидел бы, как это будет выглядеть, и обсуждать вторую фазу было бы не на чем.
+The implementation is a `wa.me` deep link with the text prefilled. The site assembles the message from the cart, contacts, address and coordinates, encodes it and puts it in the link. The guest taps the button, WhatsApp opens with the message already typed, and all that is left is to send it.
 
-Цена: раздел неотличим от рабочего, если читать невнимательно. Поэтому и подписан трижды.
-
----
-
-## 5. Leaflet и OpenStreetMap вместо Google Maps
-
-Адрес в Батуми — слабое место доставки. Новостройки без внятной нумерации, ориентиры вроде «за старой аптекой» знает не каждый курьер, а в текстовом поле гость пишет что угодно. Точка на карте снимает вопрос одним касанием.
-
-Google Maps JavaScript API требует ключ, биллинг-аккаунт и карту владельца. Для проекта без бюджета это стоп. Leaflet весит 46 КБ в gzip, работает с любыми тайлами и не требует регистрации. Тайлы взял у CARTO (стиль Voyager): светлая подложка, на которой золотой пин видно.
-
-Скрипт и стили подключаются с CDN с `integrity`-хешами и `crossorigin`. Если содержимое по ссылке подменят, браузер его не выполнит.
-
-Цена: два чужих домена в критическом пути шага 2. Поэтому у карты есть фолбэк.
+This is the most serious cost in the project: if the guest closes the tab before tapping, the kitchen has no order. The confirmation screen looks convincing, but it is a receipt for the guest. Only a server closes that hole, see the [roadmap](roadmap.md).
 
 ---
 
-## 6. Ленивая загрузка карты и фолбэк
+## 3. `localStorage` instead of a database
 
-Карта нужна одному шагу оформления из четырёх, и доходит до него не каждый, кто открыл сайт. Грузить её всем — платить чужим трафиком за функцию, которой человек может не воспользоваться.
+The cart has to survive a page reload, otherwise a guest who accidentally leaves the tab starts choosing from scratch.
 
-`initMap()` вызывается при первом показе шага 2 и сам вставляет `<link>` и `<script>` в `head`. Флаг `leafletLoaded` защищает от повторной загрузки, `invalidateSize()` вызывается трижды с задержками, потому что контейнер появляется во время CSS-перехода и Leaflet иначе считает его размер нулевым.
+All state is a single `state` object (user, cart, orders, reviews, checkout draft) serialised into `localStorage` under the key `sushi_clan_state` after every mutation. Reads and writes are wrapped in `try/catch`: in Safari private mode `localStorage` throws, and the app quietly keeps working in memory.
 
-Если скрипт не загрузился, срабатывает `onerror` и показывается фолбэк: «Map unavailable — please describe your delivery point below», поле поиска прячется, поле адреса остаётся, оформление продолжается.
-
-<img src="media/map-fallback-mobile.webp" width="280" alt="Шаг с картой, когда CDN недоступен">
-
-Это состояние я проверял отдельно, заблокировав CDN в браузере. Скриншот выше снят именно в таком прогоне.
-
-Цена: заказ без координат приходит на кухню с одним текстовым адресом. Лучше, чем заказ, который вообще не удалось оформить.
+The cost: state is tied to one browser. Moving from phone to laptop empties the cart, order history does not sync, and a review is visible only to its author. Fine for five sets a day, not fine for a chain of coffee shops.
 
 ---
 
-## 7. Поиск адреса кнопкой, а не по мере ввода
+## 4. Authentication as a demo, labelled honestly
 
-Nominatim — бесплатный геокодер OpenStreetMap с жёсткой политикой: не больше запроса в секунду, обязательная атрибуция, никакого автокомплита на каждое нажатие клавиши.
+The profile with order history was needed to show the mechanics: how orders accumulate, what a guest card looks like. Real sign-in needs a server, an SMS provider, and money per message.
 
-Поиск запускается по кнопке Find или по Enter. Запрос дополняется строкой `, Batumi, Georgia`, чтобы «Chavchavadze» не улетел в Тбилиси, ответ ограничен одной записью. Найденный адрес подставляется в поле и ставит пин.
+I kept the mechanics and removed every illusion of security. The OTP accepts any four digits, the Google button signs in a demo user. The word Demo appears three times in the interface: in the modal subtitle, on the button, and under the input.
 
-Цена: одно лишнее нажатие для гостя. Взамен сервис не банит нас за флуд, а сайт не превращается в источник паразитного трафика для бесплатного API. При росте нагрузки правильнее взять платный геокодер с автокомплитом.
+The alternative I rejected: hide the section until a backend exists. Then the owner would not have seen how it works, and there would be nothing concrete to discuss for phase two.
 
----
-
-## 8. Оверлеи вместо роутинга
-
-Карточка блюда, корзина, оформление, статья журнала и профиль — это `div`-оверлеи, которые открываются классом `active` поверх страницы. Никакой навигации, никаких перезагрузок, состояние живёт в памяти.
-
-Плюс, ради которого всё затевалось: гость никогда не теряет позицию в меню. Открыл ролл, закрыл, продолжил листать с того же места. На телефоне это ощущается как приложение, а не как сайт.
-
-Цена честная и она мне не нравится: у ролла нет своего URL. Нельзя кинуть ссылку на конкретную позицию в чат, нечего индексировать поисковику, кнопка «назад» на Android закрывает не оверлей, а страницу. Лечится через History API, `pushState` на открытие и обработчик `popstate` на закрытие. В следующей версии сделаю.
+The cost: the section is indistinguishable from a working one if you read carelessly. Which is why it is labelled three times.
 
 ---
 
-## 9. CSS-переменные вместо Tailwind
+## 5. Leaflet and OpenStreetMap instead of Google Maps
 
-Палитра, типографская шкала, отступы, радиусы и кривые анимации собраны в `:root` — около сорока токенов. Дальше вся вёрстка ссылается только на них.
+Addresses are the weak spot of delivery in Batumi. New buildings without clear numbering, landmarks like "behind the old pharmacy" that not every courier knows, and a text field where a guest writes whatever they like. A pin on a map settles it with one tap.
 
-Размеры заданы через `clamp()`: `--text-hero: clamp(2.5rem, 2rem + 2.5vw, 4.5rem)`. Шрифт плавно тянется между телефоном и десктопом, поэтому брейкпоинты почти не понадобились: на 2355 строк CSS их всего три — 480, 600 и 768 пикселей.
+The Google Maps JavaScript API needs a key, a billing account and a map inside the owner's account. For a project with no budget that is a stop sign. Leaflet weighs 46 KB gzipped, works with any tiles, and requires no registration. Tiles come from CARTO (Voyager style): a light base where a gold pin is easy to spot.
 
-Tailwind дал бы скорость на старте, но потянул бы сборку (см. решение 1), а класс-строки в разметке на сорок символов сделали бы правку контента владельцем невозможной.
+The script and the stylesheet load from a CDN with `integrity` hashes and `crossorigin`. If the content behind those URLs is ever swapped, the browser refuses to run it.
 
-Цена: дисциплина держится на мне. Никакой линтер не запретит написать `#C9A84C` мимо токена.
-
----
-
-## 10. Bebas Neue на весь интерфейс
-
-Бренд — премиум с японским акцентом: тёмный фон, золото, крупный узкий гротеск. Bebas Neue попадает в это точно и весит 14 КБ в латинском сабсете.
-
-Дальше я сделал то, что сам считаю грубым: прописал шрифт в звёздочном селекторе с `!important`. Это гарантировало, что ни одна кнопка и ни один инпут не съедет на системный шрифт ни в одном браузере, но заодно лишило страницу текстового шрифта как класса.
-
-В статьях журнала это видно: четыре абзаца подряд узким прописным гротеском читаются тяжело. Правильно было бы взять Bebas на заголовки и что-то нейтральное на текст. Оставляю как есть до редизайна и записываю в долг.
-
-Отдельная плата: шрифт грузится с Google Fonts блокирующим `<link>`. Когда домен недоступен, первый рендер ждёт таймаута — в моём офлайн-прогоне 13 секунд. См. [замеры](performance.md).
-
-И третье, что всплывёт на локализации: в Bebas Neue нет кириллицы и грузинского. Отзыв на грузинском на странице уже есть, и он рисуется системным шрифтом. При переводе интерфейса шрифтовую пару придётся пересобирать.
+The cost: two third-party domains on the critical path of step 2. Which is why the map has a fallback.
 
 ---
 
-## 11. Эмодзи вместо фотографий
+## 6. Lazy map loading and a fallback
 
-Фотосъёмка была запланирована после запуска, а сайт нужен был раньше. Пустые серые прямоугольники в меню премиум-кухни выглядят как поломка.
+The map serves one checkout step out of four, and not everyone who opens the site gets there. Loading it for everyone means paying with someone else's traffic for a feature they may never touch.
 
-Решение: крупная эмодзи на градиентной подложке в каждой карточке и честная подпись «Photo coming soon» в детальном экране. Эмодзи рендерит система, они не весят ничего и выглядят намеренно, а не как незагрузившаяся картинка.
+`initMap()` runs the first time step 2 is shown and injects the `<link>` and `<script>` into `head` itself. A `leafletLoaded` flag prevents a second load. `invalidateSize()` fires three times with delays, because the container appears during a CSS transition and Leaflet otherwise measures it as zero.
 
-Цена: это заглушка, и она не должна пережить съёмку. Разметка под фото готова, менять придётся только содержимое блока `.menu-item-thumb`.
+If the script fails, `onerror` shows the fallback: "Map unavailable — please describe your delivery point below". The search row hides, the address field stays, checkout continues.
 
----
+<img src="media/map-fallback-mobile.webp" width="280" alt="The map step when the CDN is unreachable">
 
-## 12. Экранирование на каждом `innerHTML`
+I tested this state separately by blocking the CDN in the browser. The screenshot above comes from exactly that run.
 
-Корзина, история заказов и отзывы рендерятся шаблонными строками через `innerHTML`. Отзывы гость пишет сам, туда попадает произвольный текст.
-
-Все подстановки проходят через `esc()` — замену пяти символов `& < > " '` на HTML-сущности. Числовые поля дополнительно прогоняются через `Number()`, рейтинг зажат в диапазон 0–5 перед тем, как превратиться в звёзды.
-
-Почему не `textContent` и создание узлов вручную: разметка карточки заказа это семь вложенных элементов, руками получилось бы втрое длиннее и хуже читалось бы. Шаблонная строка с обязательным `esc()` — компромисс, который я считаю честным.
-
-Цена: правило держится на внимательности. Забудешь `esc()` в новом рендере — получишь XSS. Здесь бы помог линтер.
+The cost: an order without coordinates reaches the kitchen with a text address only. Better than an order that could not be placed at all.
 
 ---
 
-## 13. Escape закрывает верхний слой, фокус возвращается
+## 7. Address search on a button, not on every keystroke
 
-Слоёв пять: карточка позиции, корзина, оформление, профиль и статья журнала. Часть из них открывается поверх уже открытого — например, авторизация поверх формы отзыва.
+Nominatim is the free OpenStreetMap geocoder with a strict policy: no more than one request per second, attribution required, no autocomplete firing on every key.
 
-Обработчик `Escape` один на документ, проверки идут в порядке приоритета: статья, оформление, авторизация, профиль, корзина. Закрывается верхний слой, остальные остаются на месте. Открытие запоминает `document.activeElement`, закрытие возвращает фокус на него.
+The search runs on the Find button or on Enter. The query gets `, Batumi, Georgia` appended so that "Chavchavadze" does not fly off to Tbilisi, and the response is capped at one result. The found address fills the field and drops the pin.
 
-Скролл фона блокируется через `position: fixed` с сохранением `scrollY` и восстановлением при закрытии, иначе iOS Safari при закрытии модалки выбрасывает страницу наверх.
-
-Цена: настоящего focus trap нет. Табом из открытого диалога можно уйти на фон. Знаю, в списке долгов.
+The cost: one extra tap for the guest. In exchange the service does not ban us for flooding, and the site does not turn into parasitic traffic for a free API. At higher volume the right move is a paid geocoder with autocomplete.
 
 ---
 
-## 14. Логотип: WebP с PNG-фолбэком, 640 пикселей
+## 8. Overlays instead of routing
 
-Исходник лежал в PNG 2048×2048 весом 3.8 МБ и подключался дважды: в шапке под иконку 38 пикселей и в первом экране под 220. Рядом лежала его точная копия `logo.png.png` — ещё 3.8 МБ в репозитории.
+The item card, the cart, checkout, a journal article and the profile are all `div` overlays that open with an `active` class on top of the page. No navigation, no reloads, state stays in memory.
 
-Максимальный размер показа 220 CSS-пикселей, значит 640 закрывают даже 3× ретину с запасом. Отдаю WebP через `<picture>`, PNG остаётся фолбэком для старых браузеров. Проставил `width`/`height` против скачка вёрстки и `fetchpriority="high"`, потому что логотип в первом экране это LCP-элемент.
+The upside this was all for: the guest never loses their place in the menu. Open a roll, close it, keep scrolling from the same spot. On a phone it feels like an app rather than a website.
 
-Одна тонкость всплыла при проверке: `picture` с `display: contents` превращает своих детей во флекс-элементы, и `<source>` съедал один `gap` в шапке — логотип уезжал на 12 пикселей вправо. Поймал сравнением скриншотов до и после, вылечил правилом `picture > source { display: none }`.
-
-Результат: 3936 КБ → 17 КБ, первый визит 4093 КБ → 174 КБ.
+The cost is real and I do not like it: an item has no URL. You cannot drop a link to one position into a chat, a search engine has nothing to index, and the Android back button closes the page instead of the overlay. The fix is the History API — `pushState` on open, a `popstate` handler on close. Next version.
 
 ---
 
-## 15. CI как сторож бюджета, а не как тесты
+## 9. CSS variables instead of Tailwind
 
-Юнит-тесты для страницы без сборки и без модулей я писать не стал: тестировать пришлось бы DOM-обёртки, польза сомнительная.
+Palette, type scale, spacing, radii and easing curves live in `:root`, about forty tokens. Everything in the stylesheet refers to those.
 
-Вместо этого `tools/check.py` проверяет то, что реально ломается в статике: все локальные `src`/`href` существуют на диске, в `head` на месте `title`, описание, `lang`, `viewport` и `theme-color`, ни один отдаваемый файл не превышает бюджет веса, в коде не осталось `console.log`, `TODO` и ссылок на `localhost`. GitHub Actions гоняет это на каждый пуш.
+Sizes use `clamp()`: `--text-hero: clamp(2.5rem, 2rem + 2.5vw, 4.5rem)`. Type stretches smoothly between phone and desktop, so breakpoints barely came up: three of them across 2355 lines of CSS — 480, 600 and 768 pixels.
 
-Бюджет веса тут главное. Именно так в репозиторий попал четырёхмегабайтный логотип: никто не смотрел. Теперь такой файл не пройдёт молча.
+Tailwind would have been faster to start with, but it drags in a build (see decision 1), and forty-character class strings in the markup would have made owner-side content edits impossible.
 
-Цена: это не тесты. Логика оформления заказа проверяется руками и прогоном сценария в браузере.
+The cost: the discipline rests on me. No linter stops anyone from writing `#C9A84C` instead of the token.
 
 ---
 
-[← назад к обзору](../README.md) · [архитектура](architecture.md) · [замеры](performance.md) · [роадмап](roadmap.md)
+## 10. Bebas Neue across the whole interface
+
+The brand is premium with a Japanese accent: dark background, gold, large condensed sans. Bebas Neue lands exactly there and weighs 14 KB in the latin subset.
+
+Then I did something I consider crude: I declared the font in the universal selector with `!important`. That guaranteed no button and no input would fall back to a system font in any browser, and it also left the page without a body typeface at all.
+
+It shows in the journal articles: four paragraphs of condensed uppercase in a row are hard work. The right call would have been Bebas for headings and something neutral for text. Leaving it until the redesign and writing it down as debt.
+
+A separate cost: the font loads from Google Fonts in a render-blocking `<link>`. When that domain is unreachable, the first paint waits for the timeout — 13 seconds in my offline run. See the [measurements](performance.md).
+
+And a third thing that will surface during localisation: Bebas Neue has no Cyrillic and no Georgian. There is already a Georgian review on the page and it renders in a system font. Translating the interface means rebuilding the type pairing.
+
+---
+
+## 11. Emoji instead of photos
+
+The photo shoot was planned for after launch, and the site was needed before that. Empty grey rectangles in the menu of a premium kitchen read as broken.
+
+The decision: a large emoji on a gradient plate in every card, and an honest "Photo coming soon" line in the detail screen. Emoji render by the system, cost no bytes, and look intentional rather than like an image that failed to load.
+
+The cost: it is a placeholder and it should not outlive the shoot. The markup for photos is ready; only the contents of `.menu-item-thumb` need to change.
+
+---
+
+## 12. Escaping on every `innerHTML`
+
+The cart, order history and reviews render through template strings and `innerHTML`. Reviews are written by guests, so arbitrary text ends up there.
+
+Every interpolation goes through `esc()`, which replaces the five characters `& < > " '` with HTML entities. Numeric fields additionally pass through `Number()`, and the rating is clamped to 0–5 before it turns into stars.
+
+Why not `textContent` and building nodes by hand: an order card is seven nested elements, and doing that manually would be three times longer and harder to read. A template string with a mandatory `esc()` is a trade I consider honest.
+
+The cost: the rule depends on attention. Forget `esc()` in a new render and you have an XSS hole. A linter would help here.
+
+---
+
+## 13. Escape closes the top layer, focus comes back
+
+There are five layers: the item card, the cart, checkout, the profile and a journal article. Some open on top of an already open one — the auth modal over the review form, for instance.
+
+There is a single `Escape` handler on the document, checking in priority order: article, checkout, auth, profile, cart. The top layer closes and the rest stay put. Opening remembers `document.activeElement`; closing returns focus to it.
+
+Background scroll is locked with `position: fixed` while `scrollY` is saved and restored, otherwise iOS Safari throws the page back to the top when a modal closes.
+
+The cost: there is no real focus trap. Tab can walk out of an open dialog. I know. It is on the debt list.
+
+---
+
+## 14. Logo: WebP with a PNG fallback, 640 pixels
+
+The original was a 2048×2048 PNG weighing 3.8 MB, pulled in twice: in the header for a 38-pixel icon and in the hero for 220. Next to it sat a byte-identical copy, `logo.png.png`, for another 3.8 MB in the repository.
+
+The largest render on the page is 220 CSS pixels, so 640 covers even a 3× display with room to spare. WebP is served through `<picture>`, PNG stays as the fallback for old browsers. I added `width`/`height` against layout shift and `fetchpriority="high"`, because the hero logo is the LCP element.
+
+One subtlety turned up during verification: `picture` with `display: contents` promotes its children to flex items, and `<source>` was eating one `gap` in the header — the logo slid 12 pixels to the right. Caught it by comparing before and after screenshots, fixed with `picture > source { display: none }`.
+
+Result: 3936 KB → 17 KB, and a first visit from 4093 KB to 174 KB.
+
+---
+
+## 15. CI as a budget guard, not as tests
+
+I did not write unit tests for a page with no build and no modules: the only thing to test would be DOM wrappers, and the value is doubtful.
+
+Instead `tools/check.py` checks what actually breaks in static sites: every local `src`/`href` exists on disk, `head` still has `title`, description, `lang`, `viewport` and `theme-color`, no shipped file exceeds its weight budget, and no `console.log`, `TODO` or `localhost` link is left in the code. GitHub Actions runs it on every push.
+
+The weight budget is the important part. That is exactly how a four-megabyte logo got into the repository: nobody was looking. Now a file like that does not pass quietly.
+
+The cost: these are not tests. The checkout logic is verified by hand and by walking the scenario in a browser.
+
+---
+
+[← back to the overview](../README.md) · [architecture](architecture.md) · [measurements](performance.md) · [roadmap](roadmap.md)

@@ -1,26 +1,26 @@
-# Замеры
+# Measurements
 
-Все цифры в репозитории получены одним скриптом, который лежит рядом: `tools/measure.js`. Он поднимает статику на локальном порту, гоняет по ней Chromium через Playwright, считает байты по каждому ответу и снимает размер DOM. Никаких оценок на глаз.
+Every number in this repository comes from one script sitting next to it: `tools/measure.js`. It serves the static files on a local port, drives Chromium over them through Playwright, counts the bytes of every response and reads the DOM size. Nothing here is eyeballed.
 
-[← назад к обзору](../README.md)
+[← back to the overview](../README.md)
 
 ---
 
-## Как запустить
+## Running it
 
 ```bash
-npm i -D playwright        # один раз
-node tools/measure.js      # внешние домены заблокированы
-node tools/measure.js --keep-external   # со шрифтом и картой
+npm i -D playwright        # once
+node tools/measure.js      # external hosts blocked
+node tools/measure.js --keep-external   # with the font and the map
 ```
 
-По умолчанию запросы к `fonts.googleapis.com`, `fonts.gstatic.com`, `unpkg.com` и тайлам CARTO блокируются. Так измеряется вес того, что отдаёт этот репозиторий, а не того, что добавляет к нему интернет.
+By default requests to `fonts.googleapis.com`, `fonts.gstatic.com`, `unpkg.com` and the CARTO tiles are blocked. That measures the weight of what this repository serves, not what the internet adds to it.
 
 ---
 
-## Что было
+## Before
 
-Первая версия сайта на визит:
+The first version, per visit:
 
 ```
  3936 KB  image     logo.png
@@ -30,9 +30,9 @@ node tools/measure.js --keep-external   # со шрифтом и картой
   750     DOM nodes
 ```
 
-Логотип лежал в PNG 2048×2048 и подключался дважды: в первом экране под показ в 220 CSS-пикселей и в шапке под иконку 38 пикселей. Оба раза браузер тянул полный файл и декодировал четыре мегапикселя, чтобы нарисовать кружок размером с ноготь. Рядом в репозитории лежала точная побайтовая копия `logo.png.png` — ещё 3.8 МБ, на которую никто ни разу не сослался.
+The logo was a 2048×2048 PNG loaded twice: in the hero for a 220 CSS pixel render and in the header for a 38 pixel icon. Both times the browser pulled the full file and decoded four megapixels to paint a circle the size of a fingernail. A byte-identical copy, `logo.png.png`, sat next to it in the repository — another 3.8 MB that nothing ever referenced.
 
-## Что стало
+## After
 
 ```
   157 KB  document  index.html
@@ -42,24 +42,24 @@ node tools/measure.js --keep-external   # со шрифтом и картой
   755     DOM nodes, 2 images
 ```
 
-| Метрика | Было | Стало | Разница |
+| Metric | Before | After | Delta |
 |---|---|---|---|
-| Вес первого визита | 4093 КБ | 174 КБ | −96% |
-| Логотип | 3936 КБ | 17 КБ | −99.6% |
-| `index.html` | 156.2 КБ | 157.1 КБ | +0.9 КБ |
-| `index.html` в gzip | 31.4 КБ | 31.8 КБ | +0.4 КБ |
-| Запросов | 2 | 2 | — |
-| Узлов в DOM | 750 | 755 | +5 |
+| First visit weight | 4093 KB | 174 KB | −96% |
+| Logo | 3936 KB | 17 KB | −99.6% |
+| `index.html` | 156.2 KB | 157.1 KB | +0.9 KB |
+| `index.html` gzipped | 31.4 KB | 31.8 KB | +0.4 KB |
+| Requests | 2 | 2 | — |
+| DOM nodes | 750 | 755 | +5 |
 
-Плюс шрифт с Google Fonts: латинский сабсет Bebas Neue весит 13.4 КБ, к нему CSS на 210 байт и два запроса к чужому домену. В таблице его нет намеренно — репозиторий его не отдаёт.
+On top of that comes the font from Google Fonts: the latin subset of Bebas Neue is 13.4 KB, plus 210 bytes of CSS and two requests to a third-party domain. It is deliberately not in the table, because the repository does not serve it.
 
 ---
 
-## Что именно было сделано
+## What was actually done
 
-Логотип пересобран в 640×640. Максимум показа на странице — 220 CSS-пикселей, значит 640 закрывают даже экраны с плотностью 3×. Альфа-канал в исходнике оказался полностью непрозрачным, так что прозрачность выбрасывается без потерь, а круглая форма и так рисуется через `border-radius` и `object-fit: cover`.
+The logo was rebuilt at 640×640. The largest render on the page is 220 CSS pixels, so 640 covers even 3× density screens. The alpha channel in the source turned out to be fully opaque, so transparency is dropped without any loss — the circular shape comes from `border-radius` and `object-fit: cover` anyway.
 
-Отдаётся WebP, PNG остался фолбэком:
+WebP is served, PNG stays as the fallback:
 
 ```html
 <picture>
@@ -69,45 +69,45 @@ node tools/measure.js --keep-external   # со шрифтом и картой
 </picture>
 ```
 
-`width` и `height` убирают скачок вёрстки при загрузке. `fetchpriority="high"` и `<link rel="preload" as="image" type="image/webp">` в `head` поднимают приоритет LCP-элемента; браузеры без поддержки WebP пропускают этот preload из-за атрибута `type`, лишних байтов никто не платит.
+`width` and `height` remove the layout shift on load. `fetchpriority="high"` and `<link rel="preload" as="image" type="image/webp">` in `head` raise the priority of the LCP element; browsers without WebP support skip that preload because of the `type` attribute, so nobody pays extra bytes.
 
-WebP получился 17 КБ, PNG-фолбэк 30 КБ. Дубликат `logo.png.png` удалён из репозитория.
+WebP came out at 17 KB, the PNG fallback at 30 KB. The `logo.png.png` duplicate is gone from the repository.
 
 ---
 
-## Одна тонкость, которую поймал только скриншот-диффом
+## One subtlety only a screenshot diff caught
 
-После перехода на `<picture>` я сравнил снимки первого экрана до и после попиксельно. Совпало почти всё, кроме шапки: логотип и название уехали на 12 пикселей вправо.
+After switching to `<picture>` I compared hero screenshots before and after, pixel by pixel. Almost everything matched, except the header: the logo and the wordmark had moved 12 pixels to the right.
 
-Причина в `picture { display: contents }`. Правило убирает сам элемент из потока, но при этом его дети становятся флекс-элементами родителя, и `<source>` в их числе. Пустой невидимый `<source>` съедал ровно один `gap: 0.75rem` в навигации.
+The cause is `picture { display: contents }`. The rule removes the element itself from the flow, but its children become flex items of the parent — and `<source>` is one of them. An empty invisible `<source>` was eating exactly one `gap: 0.75rem` in the navigation.
 
-Лечение в одну строку:
+A one-line fix:
 
 ```css
 picture { display: contents; }
 picture > source { display: none; }
 ```
 
-Проверка после правки: `nav-logo-icon` в точке 168 по X, как и до изменений.
+Verified afterwards: `nav-logo-icon` sits at X 168, the same as before the change.
 
-Мораль в том, что глазами это увидеть нельзя, а диффом двух скриншотов — за секунду.
-
----
-
-## Что осталось на шрифте
-
-В офлайн-прогоне, где `fonts.googleapis.com` недоступен, `DOMContentLoaded` наступил через 13 секунд: браузер честно ждал сетевого таймаута на блокирующем `<link>`. При работающей сети это доли секунды, но зависимость от чужого домена в критическом пути остаётся.
-
-Лечится переносом шрифта к себе: положить `bebas-neue-latin.woff2` (13.4 КБ) в репозиторий, объявить `@font-face` в том же инлайновом CSS, снять оба `preconnect` и `<link>`. Минус один внешний домен, минус два запроса, первый рендер зависит только от нашего сервера. Bebas Neue распространяется под OFL 1.1, так что вместе с файлом в репозиторий кладётся текст лицензии.
-
-Это первый пункт [роадмапа](roadmap.md).
+The lesson is that the eye cannot catch this, and a diff of two screenshots catches it in a second.
 
 ---
 
-## Чего эти замеры не показывают
+## What is still on the font
 
-Скрипт считает байты и узлы, а не пользовательский опыт. Реальные Core Web Vitals с живого домена, на грузинском мобильном интернете, с настоящим шрифтом и картой я не снимал: у меня нет доступа к продовой аналитике этого сайта. Когда появится, там же появятся LCP, INP и CLS с поля, а не из лаборатории.
+In an offline run, with `fonts.googleapis.com` unreachable, `DOMContentLoaded` fired after 13 seconds: the browser dutifully waited out the network timeout on a render-blocking `<link>`. With a working network that is a fraction of a second, but the dependency on somebody else's domain stays on the critical path.
+
+The fix is self-hosting: put `bebas-neue-latin.woff2` (13.4 KB) in the repository, declare `@font-face` in the same inline CSS, drop both `preconnect` hints and the `<link>`. One external domain fewer, two requests fewer, and the first paint depends only on our own server. Bebas Neue ships under OFL 1.1, so the licence text goes into the repository along with the file.
+
+It is the first item on the [roadmap](roadmap.md).
 
 ---
 
-[← назад к обзору](../README.md) · [решения](decisions.md) · [архитектура](architecture.md) · [роадмап](roadmap.md)
+## What these measurements do not show
+
+The script counts bytes and nodes, not user experience. I have not captured real Core Web Vitals from the live domain, on Georgian mobile networks, with the actual font and map: I do not have access to this site's production analytics. Once that exists, LCP, INP and CLS from the field will live here too, instead of lab numbers.
+
+---
+
+[← back to the overview](../README.md) · [decisions](decisions.md) · [architecture](architecture.md) · [roadmap](roadmap.md)

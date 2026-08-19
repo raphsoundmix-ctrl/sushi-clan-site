@@ -1,72 +1,72 @@
-# Что дальше
+# What comes next
 
-Первая фаза решала одну задачу: довести заказ от гостя до кухни без сервера. Она это делает, и у решения есть потолок. Ниже то, что я сделал бы дальше, в порядке пользы для бизнеса, а не интересности для разработчика.
+Phase one solved one problem: get an order from the guest to the kitchen without a server. It does that, and the solution has a ceiling. Below is what I would build next, ordered by value to the business rather than by how interesting it is to write.
 
-[← назад к обзору](../README.md)
-
----
-
-## Ближайшее, без бэкенда
-
-Три вещи, которые можно закрыть в текущей архитектуре за день.
-
-**Шрифт к себе.** Убрать зависимость первого рендера от `fonts.googleapis.com`: положить woff2 рядом, объявить `@font-face` в инлайновом CSS, добавить файл лицензии OFL. Заодно развести дисплейный и текстовый шрифт, чтобы абзацы в журнале читались без усилия.
-
-**URL у позиций меню.** `pushState` при открытии карточки, `popstate` на закрытие. Тогда ссылку на конкретный ролл можно кинуть в чат, кнопка «назад» на Android будет закрывать оверлей, а не страницу, и поисковику появится что индексировать. Туда же Open Graph, чтобы ссылка в мессенджере раскрывалась карточкой с логотипом.
-
-**Валидация шага с картой.** Сейчас шаг проскакивается пустым. Правильно: требовать либо координаты, либо непустой адрес, оставив кнопку «не могу поставить точку» для случая, когда тайлы не грузятся.
+[← back to the overview](../README.md)
 
 ---
 
-## Вторая фаза: сервер
+## Near term, still without a backend
 
-Главная дыра первой версии в том, что заказ уезжает на кухню только когда гость нажал кнопку WhatsApp. Всё остальное — следствия того же: нет счётчика дневного лимита, нет стоп-листа, нет проверки цены, отзывы видит только автор.
+Three things that fit inside the current architecture and take about a day.
+
+**Self-host the font.** Remove the first paint's dependency on `fonts.googleapis.com`: put the woff2 next to the page, declare `@font-face` in the inline CSS, add the OFL licence file. While in there, split display and body type so journal paragraphs stop being work to read.
+
+**URLs for menu items.** `pushState` when a card opens, `popstate` when it closes. Then a link to a specific roll can be dropped into a chat, the Android back button closes the overlay instead of the page, and a search engine has something to index. Open Graph tags belong in the same pass, so a shared link unfolds into a card with the logo.
+
+**Validation on the map step.** Right now the step can be skipped empty. It should require either coordinates or a non-empty address, keeping an "I cannot drop a pin" escape hatch for when the tiles fail to load.
+
+---
+
+## Phase two: the server
+
+The main hole in the first version is that the order only reaches the kitchen when the guest taps the WhatsApp button. Everything else follows from the same root: no daily limit counter, no stop list, no price validation, and reviews only their author can see.
 
 ```mermaid
 flowchart LR
-    B["Страница<br/>та же, плюс fetch"] -->|"POST /orders<br/>Idempotency-Key"| A["API<br/>FastAPI или Supabase Edge"]
-    A --> DB[("Postgres<br/>заказы · меню · стоп-лист")]
-    A --> Q["n8n<br/>маршрутизация и ретраи"]
-    Q --> T["Telegram-бот кухни<br/>заказ с кнопками принять/отклонить"]
-    Q --> W["WhatsApp Business API<br/>подтверждение гостю"]
-    Q --> S["Sheets или дашборд<br/>дневная сводка"]
-    DB --> ADM["Админка<br/>меню, цены, лимит дня"]
+    B["The same page,<br/>plus fetch"] -->|"POST /orders<br/>Idempotency-Key"| A["API<br/>FastAPI or Supabase Edge"]
+    A --> DB[("Postgres<br/>orders · menu · stop list")]
+    A --> Q["n8n<br/>routing and retries"]
+    Q --> T["Kitchen Telegram bot<br/>order with accept/decline"]
+    Q --> W["WhatsApp Business API<br/>confirmation to the guest"]
+    Q --> S["Sheet or dashboard<br/>daily summary"]
+    DB --> ADM["Admin panel<br/>menu, prices, daily limit"]
     ADM --> B
 ```
 
-Как это работает по шагам:
+Step by step:
 
-1. Страница отправляет заказ на API и получает номер от сервера. Кнопка WhatsApp остаётся, но уже как удобство для гостя, а не как единственный канал.
-2. Заголовок `Idempotency-Key` с номером заказа: двойной тап по кнопке на плохой связи не создаёт второй заказ.
-3. API пишет заказ в Postgres, проверяет цены по базе, а не по тому, что прислал браузер, и уменьшает счётчик дневного лимита в транзакции.
-4. n8n забирает событие и разносит: карточка заказа в Telegram-бот кухни с кнопками «принять» и «отклонить», подтверждение гостю в WhatsApp, строка в сводку за день. Ретраи с экспоненциальной задержкой, структурные логи по каждому шагу.
-5. Меню, цены и стоп-лист переезжают в базу. Владелец правит их в админке, а не в HTML.
+1. The page posts the order to the API and gets its id back from the server. The WhatsApp button stays, but as a convenience for the guest rather than the only channel.
+2. An `Idempotency-Key` header carrying the order id: a double tap on a flaky connection does not create a second order.
+3. The API writes the order into Postgres, checks prices against the database instead of trusting the browser, and decrements the daily limit counter inside a transaction.
+4. n8n picks up the event and fans it out: an order card into the kitchen Telegram bot with accept and decline buttons, a confirmation to the guest over WhatsApp, a row in the daily summary. Retries with exponential backoff, structured logs at every step.
+5. Menu, prices and the stop list move into the database. The owner edits them in an admin panel instead of in HTML.
 
-Стек выбран не по красоте, а по тому, что я на нём уже работаю: FastAPI или Supabase Edge Functions, Postgres, n8n на самохостинге в Docker, Telegram Bot API. Всё это разворачивается на одном небольшом VPS.
+The stack is picked for what I already work with, not for elegance: FastAPI or Supabase Edge Functions, Postgres, self-hosted n8n in Docker, the Telegram Bot API. All of it fits on one small VPS.
 
-Ориентир по срокам, если делать одному: неделя на API и базу, ещё несколько дней на маршрутизацию в n8n и бота, неделя на админку. Оплата и эквайринг считаются отдельно — там больше бумаг, чем кода.
-
----
-
-## Третья фаза: продукт
-
-- **Фотографии блюд.** Заглушки-эмодзи уходят, разметка под картинки уже готова. Съёмка, обработка, AVIF и WebP с `srcset` под плотность экрана.
-- **Три языка.** Английский, русский, грузинский. Тексты тут половина работы: шрифтовая пара должна покрывать все три алфавита, а Bebas Neue не покрывает ни кириллицу, ни грузинский.
-- **Оплата онлайн.** Эквайринг грузинских банков (BOG, TBC) или карточный провайдер поверх. Только после того, как заказы начнут стабильно приходить через API: оплата поверх ненадёжного канала — плохая идея.
-- **Отзывы на сервере.** Сейчас они живут в браузере автора. Настоящая модерация плюс подтягивание отзывов из Google Maps, где их и оставляют чаще всего.
-- **Аналитика.** Минимум событий: открытие карточки, добавление в корзину, шаг оформления, отправка заказа. Без этого разговор об конверсии — гадание.
-- **Программа повторных заказов.** У приватной кухни с лимитом пять сетов в день ценность в постоянных гостях: история заказов, повтор в один тап, напоминание перед выходными.
+Rough timing for one person: a week for the API and the database, a few more days for the n8n routing and the bot, another week for the admin panel. Payments and acquiring are counted separately, since there is more paperwork there than code.
 
 ---
 
-## Чего делать не буду
+## Phase three: the product
 
-Переписывать на React не буду. Одна страница, четыре наложения, состояние в одном объекте. Фреймворк добавит сборку и зависимости, но не уберёт ни одной существующей проблемы.
-
-Дизайн-систему тоже не буду: сорока CSS-переменных здесь хватает. Отдельный пакет компонентов оправдан, когда страниц больше одной и разработчиков тоже.
-
-Своя доставка с трекингом — не сейчас. Пять сетов в день, небольшой город, координация в WhatsApp. Трекинг начинает окупаться на десятках заказов в день, не раньше.
+- **Food photography.** The emoji placeholders go away; the markup for images is already there. Shoot, retouch, then AVIF and WebP with `srcset` for screen density.
+- **Three languages.** English, Russian, Georgian. The text is half the job: the type pairing has to cover all three alphabets, and Bebas Neue covers neither Cyrillic nor Georgian.
+- **Online payment.** Acquiring through Georgian banks (BOG, TBC) or a card provider on top. Only after orders reliably arrive through the API — payment on top of an unreliable channel is a bad idea.
+- **Reviews on the server.** Right now they live in their author's browser. Real moderation, plus pulling in reviews from Google Maps, where people leave them anyway.
+- **Analytics.** A minimum set of events: card opened, added to cart, checkout step, order submitted. Without those, any conversation about conversion is guesswork.
+- **Repeat orders.** For a private kitchen capped at five sets a day the value sits in regulars: order history, one-tap reorder, a reminder before the weekend.
 
 ---
 
-[← назад к обзору](../README.md) · [решения](decisions.md) · [архитектура](architecture.md) · [замеры](performance.md)
+## What I will not build
+
+I am not rewriting this in React. One page, four layers, state in a single object. A framework would add a build and dependencies without removing a single existing problem.
+
+No design system either: forty CSS variables are enough here. A separate component package earns its place when there is more than one page and more than one developer.
+
+Own delivery with tracking, not now. Five sets a day, a small city, coordination in WhatsApp. Tracking starts paying off in the tens of orders a day, not before.
+
+---
+
+[← back to the overview](../README.md) · [decisions](decisions.md) · [architecture](architecture.md) · [measurements](performance.md)

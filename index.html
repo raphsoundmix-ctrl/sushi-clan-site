@@ -13,6 +13,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 
+<!-- Hero logo is the LCP element. Browsers without WebP skip this preload because of type. -->
+<link rel="preload" as="image" href="logo.webp" type="image/webp">
+
 <style>
 /* ═══════════════════════════════════════════
    DESIGN TOKENS
@@ -63,6 +66,12 @@
    RESET & BASE
    ═══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Bebas Neue', sans-serif !important; }
+
+/* <picture> only carries the WebP/PNG choice — it must not become a layout box.
+   display:contents promotes its children to flex items, so <source> has to be hidden
+   or it eats one flex gap in the nav. */
+picture { display: contents; }
+picture > source { display: none; }
 
 html {
   scroll-behavior: smooth;
@@ -2372,7 +2381,10 @@ section {
 <nav class="nav" id="nav">
   <div class="container nav-inner">
     <a href="#" class="nav-logo">
-      <img class="nav-logo-icon" src="logo.png" alt="Sushi Clan logo">
+      <picture>
+        <source srcset="logo.webp" type="image/webp">
+        <img class="nav-logo-icon" src="logo.png" alt="Sushi Clan logo" width="38" height="38" decoding="async">
+      </picture>
       <span class="nav-logo-text">SUSHI CLAN</span>
     </a>
 
@@ -2419,7 +2431,10 @@ section {
 
 <!-- ═══════════════════════ HERO ═══════════════════════ -->
 <section class="hero">
-  <img class="hero-logo" src="logo.png" alt="Sushi Clan logo">
+  <picture>
+    <source srcset="logo.webp" type="image/webp">
+    <img class="hero-logo" src="logo.png" alt="Sushi Clan logo" width="220" height="220" fetchpriority="high" decoding="async">
+  </picture>
 
   <p class="hero-eyebrow">Private Kitchen · Batumi</p>
   <h1>The Art of <em>Sushi</em>,<br>Delivered</h1>
@@ -2427,7 +2442,7 @@ section {
 
   <div class="hero-actions">
     <a href="#menu" class="btn-primary">Explore the Menu &rarr;</a>
-    <a href="https://wa.me/995555162751?text=Hello%20I%20want%20to%20order%20sushi%20%F0%9F%8D%A3%0A%0AName:%20%0AAddress:%20%0ATime:%20%0AOrder:%20">
+    <a href="https://wa.me/995555162751?text=Hello%20I%20want%20to%20order%20sushi%20%F0%9F%8D%A3%0A%0AName:%20%0AAddress:%20%0ATime:%20%0AOrder:%20" target="_blank" rel="noopener noreferrer">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" /><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.611.611l4.458-1.495A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.203 0-4.247-.712-5.906-1.924l-.412-.31-2.647.888.888-2.647-.31-.412A9.96 9.96 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z" /></svg>
         WhatsApp
     </a>
@@ -2620,7 +2635,7 @@ section {
 <!-- Philadelphia Signature -->
 <div class="item-detail-overlay" id="detail-philadelphia">
   <div class="item-detail-banner">
-    <button class="item-detail-back" data-close="philadelphia">&#8249;</button>
+    <button class="item-detail-back" data-close="philadelphia" aria-label="Back to menu">&#8249;</button>
     <div class="item-detail-banner-icon">&#127843;</div>
     <div class="item-detail-banner-hint">Photo coming soon</div>
     <div class="item-detail-tier-badge">Tier 1 · Classic</div>
@@ -2658,7 +2673,7 @@ section {
 <!-- California Black Sea -->
 <div class="item-detail-overlay" id="detail-california">
   <div class="item-detail-banner">
-    <button class="item-detail-back" data-close="california">&#8249;</button>
+    <button class="item-detail-back" data-close="california" aria-label="Back to menu">&#8249;</button>
     <div class="item-detail-banner-icon">&#129408;</div>
     <div class="item-detail-banner-hint">Photo coming soon</div>
     <div class="item-detail-tier-badge">Tier 1 · Classic</div>
@@ -2695,7 +2710,7 @@ section {
 <!-- Spicy Salmon Crunch -->
 <div class="item-detail-overlay" id="detail-spicy">
   <div class="item-detail-banner">
-    <button class="item-detail-back" data-close="spicy">&#8249;</button>
+    <button class="item-detail-back" data-close="spicy" aria-label="Back to menu">&#8249;</button>
     <div class="item-detail-banner-icon">&#127798;&#65039;</div>
     <div class="item-detail-banner-hint">Photo coming soon</div>
     <div class="item-detail-tier-badge">Tier 1 · Classic</div>
@@ -2732,7 +2747,7 @@ section {
 <!-- Unagi Dragon Roll -->
 <div class="item-detail-overlay" id="detail-unagi">
   <div class="item-detail-banner">
-    <button class="item-detail-back" data-close="unagi">&#8249;</button>
+    <button class="item-detail-back" data-close="unagi" aria-label="Back to menu">&#8249;</button>
     <div class="item-detail-banner-icon">&#128293;</div>
     <div class="item-detail-banner-hint">Photo coming soon</div>
     <div class="item-detail-tier-badge">Tier 2 · Elevated</div>
@@ -2769,7 +2784,7 @@ section {
 <!-- Black Garlic Shrimp -->
 <div class="item-detail-overlay" id="detail-shrimp">
   <div class="item-detail-banner">
-    <button class="item-detail-back" data-close="shrimp">&#8249;</button>
+    <button class="item-detail-back" data-close="shrimp" aria-label="Back to menu">&#8249;</button>
     <div class="item-detail-banner-icon">&#127844;</div>
     <div class="item-detail-banner-hint">Photo coming soon</div>
     <div class="item-detail-tier-badge">Tier 2 · Elevated</div>
@@ -2806,7 +2821,7 @@ section {
 <!-- Torched Salmon Nigiri -->
 <div class="item-detail-overlay" id="detail-nigiri">
   <div class="item-detail-banner">
-    <button class="item-detail-back" data-close="nigiri">&#8249;</button>
+    <button class="item-detail-back" data-close="nigiri" aria-label="Back to menu">&#8249;</button>
     <div class="item-detail-banner-icon">&#10024;</div>
     <div class="item-detail-banner-hint">Photo coming soon</div>
     <div class="item-detail-tier-badge">Tier 2 · Signature</div>
@@ -2842,7 +2857,7 @@ section {
 <!-- Omakase Onigiri Duo -->
 <div class="item-detail-overlay" id="detail-onigiri">
   <div class="item-detail-banner">
-    <button class="item-detail-back" data-close="onigiri">&#8249;</button>
+    <button class="item-detail-back" data-close="onigiri" aria-label="Back to menu">&#8249;</button>
     <div class="item-detail-banner-icon">&#128314;</div>
     <div class="item-detail-banner-hint">Photo coming soon</div>
     <div class="item-detail-tier-badge">Tier 3 · Signature</div>
@@ -2877,7 +2892,7 @@ section {
 <!-- Clan Set (Flagship) -->
 <div class="item-detail-overlay" id="detail-clanset">
   <div class="item-detail-banner" style="background: var(--color-surface-2); border-bottom-color: rgba(201,168,76,0.15);">
-    <button class="item-detail-back" data-close="clanset">&#8249;</button>
+    <button class="item-detail-back" data-close="clanset" aria-label="Back to menu">&#8249;</button>
     <div class="item-detail-banner-icon">&#128081;</div>
     <div class="item-detail-banner-hint">Photo coming soon</div>
     <div class="item-detail-tier-badge">Flagship · Tier 3</div>
